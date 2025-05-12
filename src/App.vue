@@ -136,18 +136,18 @@ const apiCall = async () => {
 
 <template class="bg-[#12CFCF] m-0 p-0" >
   <main class="  m-0">
-    <div id="base" class=" border-2 border-black border-solid font-bold bg-[#1193d9] text-white grid-cols-2 grid grid-rows-3   h-[100%]  text-4xl ">
+    <div id="base" class="  border-2 border-black border-solid font-bold bg-[#1193d9] text-white grid-cols-2 grid grid-rows-3   h-[100%]   ">
       
-        <div class="p-40">
-        <p class="headerA mb-10"> Hi, my name is Patrick Emanuel Tomic. </p>
-        <p class="text-2xl w-[30vw]">
+        <div class="p-[10vw] text-white font-bold text-3xl">
+        <p class="headerA mb-10 font-[1000] text-[#fff]"> Hi, my name is Patrick Emanuel Tomic. </p>
+        <p class="text-2xl font-[1000] text-[#fff] w-[30vw]">
         I'm an Independent Software Engineer Consultant from Tampa, Fl
         </p>
       </div>
-        <img src="./assets/me.jpeg" alt="" class="w-[20vw] ml-40 mt-40  grid-rows-4 ">
+        <img src="./assets/me.jpeg" alt="" class="w-[20vw] ml-[10vw] mt-[10vh] grid-rows-4 ">
       
       <div class="absolute top-[40%] left-[10%]">
-        <p class="text-2xl p-40 ml-40">
+        <p class="text-2xl text-[#fff] font-[1000] p-[10vw] font-bold ml-40">
          <span  v-bind:style ="{animationDelay: (0.5+0/10)+'s'}">S</span>
          <span v-bind:style ="{animationDelay: (0.5+1/10)+'s'}">C</span>
          <span v-bind:style ="{animationDelay: (0.5+2/10)+'s'}">R</span>
@@ -166,14 +166,8 @@ const apiCall = async () => {
         </div>
       </div>
    </div>
-   <div>
-    <h1>
-      
-    </h1>
-   </div>
+   
    <hr class="w-[100%] p-0 col-span-2 border-black">
-    
-  
     </div>
     <div class="flex border-2 border-black border-solid w-[100%] h-[65vh] ">
     
@@ -224,6 +218,10 @@ const apiCall = async () => {
 </template>
 
 <style scoped lang="scss">
+*{
+  font-size: 24px;
+  font-family: 'inter', sans-serif;
+}
 #wrap{
   overflow:hidden;
   #scrollBar{
