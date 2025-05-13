@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import node from './assets/node.png'
+import space from './assets/space.png'
 import { ref } from 'vue';
 import vue from './assets/vue.png'
 import express from './assets/express.png'
@@ -158,9 +159,9 @@ const apiCall = async () => {
       <hr id="firstHR" class="border-2 w-[100%] absolute top-[100%] left-0">
       <div id="contact" class="w-[100vw] grid grid-cols-2 text-3xl mt-[20vh] p-40">
       
-      <p class="w-[40vw] col-span-2">From single-page websites to cloud-based applications, starting from scratch, or rebuilding the brand. I help anyone needing assistance with web projects; whatever your imagination thinks,<b> I can build it</b>  </p>
-      <div id="wrap" class="absolute top-[190vh]  left-0 w-[100%] flex bg-white p-5">
-        <div id="scrollBar" class="w-[100%] flex bg-white p-5" >
+      <p class="w-[40vw] p-[10vw] text-[#fff] col-span-2">From single-page websites to cloud-based applications, starting from scratch, or rebuilding the brand. I help anyone needing assistance with web projects; whatever your imagination thinks,<b> I can build it</b>  </p>
+      <div id="wrap" class="absolute top-[222vh]  left-0 w-[100%] flex bg-[#fff] p-5">
+        <div id="scrollBar" class="w-[100%] flex bg-[#fff] p-[2vw]" >
           <img class="w-[5vw] mr-[5vw] h-[100%] rounded-full" v-for="image in imgList" :src="image.src" :alt="image.alt" />
           <img class="w-[5vw] mr-[5vw] h-[100%] rounded-full" v-for="image in imgList" :src="image.src" :alt="image.alt" />
         </div>
@@ -169,18 +170,18 @@ const apiCall = async () => {
    
    <hr class="w-[100%] p-0 col-span-2 border-black">
     </div>
-    <div class="flex border-2 border-black border-solid w-[100%] h-[65vh] ">
+    <div class="flex border-2 border-black border-solid w-[100%] h-[81vh] ">
     
-    <ul class="w-[25%] text-xl font-bold ">
+    <ul class="w-[45%] text-xl font-bold ">
       <li @click="()=> {
         
-      }" class="cursor-pointer mb-16"   >
+      }" class="cursor-pointer mb-[10vh]"   >
        Xtreme Body Nutrition
       </li>
-      <li @click="projectChange('growwr')" class="cursor-pointer mb-16">
+      <li @click="projectChange('growwr')" class="cursor-pointer mb-[10vh]">
        Growwr
       </li>
-      <li @click="projectChange('battleship')" class="cursor-pointer mb-16"   >
+      <li @click="projectChange('battleship')" class="cursor-pointer mb-[10vh]"   >
        BattleShip
       </li>
     </ul>
@@ -191,29 +192,30 @@ const apiCall = async () => {
     </div>
    </div>
    <div id="contactForm" class="border-2 border-black border-solid">
-    <form action="">
-      <div>
+    <form  action="" >
+      <div class="ml-10">
         <label for="name">Full Name</label>
-        <input name="name" type="text">
+        <input class="border-2 border-[#000] border-solid" name="name" type="text">
       </div>
-      <div >
+      <div>
         <label for="email">Email</label>
-        <input name="email" type="email">
+        <input name="email" class="border-2 border-[#000] border-solid" type="email">
       </div>
       <div >
         <label for="subject">Subject</label>
-        <input name="subject" type="text">
+        <input name="subject" class="border-2  border-[#000] border-solid" type="text">
       </div>
       <div >
         <label for="text">Message</label>
-        <textarea name="text" id="messageBox"></textarea>
+        <textarea name="text" class="border-2 border-[#000] border-solid" id="messageBox"></textarea>
       </div>
      <button @click="">
       Enter
      </button>
     </form>
-    
    </div>
+  
+    
   </main>
 </template>
 
@@ -228,6 +230,16 @@ const apiCall = async () => {
   transition: all 0.5s ease-in-out;
 
 }
+}
+#contactForm{
+  width: 100vw;
+}
+#contact{
+ 
+  
+  background-image: url(./assets/space.png);
+
+  height: 100vh;
 }
 
  html,body{
