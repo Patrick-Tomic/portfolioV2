@@ -158,8 +158,15 @@ const apiCall = async () => {
       </p></div>
       <hr id="firstHR" class="border-2 w-[100%] absolute top-[100%] left-0">
       <div id="contact" class="w-[100vw] grid grid-cols-2 text-3xl mt-[20vh] p-40">
+      <div >
+<p class="w-[40vw] p-[10vw] text-[#fff] col-span-2">From single-page websites to cloud-based applications, 
+                                                    starting from scratch, or rebuilding the brand. I help anyone needing 
+                                                    assistance with web projects; whatever your imagination thinks,<b> I can build it</b>  </p>
+      <canvas>
+
+      </canvas>
+      </div>
       
-      <p class="w-[40vw] p-[10vw] text-[#fff] col-span-2">From single-page websites to cloud-based applications, starting from scratch, or rebuilding the brand. I help anyone needing assistance with web projects; whatever your imagination thinks,<b> I can build it</b>  </p>
       <div id="wrap" class="absolute top-[222vh]  left-0 w-[100%] flex bg-[#fff] p-5">
         <div id="scrollBar" class="w-[100%] flex bg-[#fff] p-[2vw]" >
           <img class="w-[5vw] mr-[5vw] h-[100%] rounded-full" v-for="image in imgList" :src="image.src" :alt="image.alt" />
