@@ -2,6 +2,9 @@
 
 //typed language. 
 void main() {
-    gl_Position = vec4(1,0,0,1);
+
+    gl_Position = projectionMatrix * modelViewMatric *vec4(position,1)
+    //gl_Position = vec4(position,1);
 
 }
+//vec3 is = to (0,1,0) in the shader language
