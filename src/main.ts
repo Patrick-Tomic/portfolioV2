@@ -17,12 +17,17 @@ document.body.appendChild(renderer.domElement)
 
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(5,50,50),
  new THREE.ShaderMaterial({
- vertexShader,
- fragmentShader
+ vertexShader: vertexShader,
+ fragmentShader,
+ uniforms: {
+    globeTexture: {
+        value: new THREE.TextureLoader().load(earth)
+    }
+ }
 }))
 scene.add(sphere)
 
-camera.position.z = 30
+camera.position.z = 20
 
 
 function animate () {
