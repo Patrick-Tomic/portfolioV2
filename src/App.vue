@@ -136,8 +136,8 @@ const apiCall = async () => {
  
 
 <template class="bg-[#12CFCF] m-0 p-0" >
-  <main class="  m-0">
-    <div id="base" class="  border-2 border-black border-solid font-bold bg-[#1193d9] text-white grid-cols-2 grid grid-rows-3   h-[100%]   ">
+  <main class=" flex flex-col">
+    <div id="base" class=" m-0 font-bold bg-[#1193d9] text-white grid-cols-2 grid grid-rows-3   h-[198vh]   ">
       
         <div class="p-[10vw] text-white font-bold text-3xl">
         <p class="headerA mb-10 font-[1000] text-[#fff]"> Hi, my name is Patrick Emanuel Tomic. </p>
@@ -147,39 +147,23 @@ const apiCall = async () => {
       </div>
         <img src="./assets/me.jpeg" alt="" class="w-[20vw] ml-[10vw] mt-[10vh] grid-rows-4 ">
       
-      <div class="absolute top-[40%] left-[10%]">
-        <p class="text-2xl text-[#fff] font-[1000] p-[10vw] font-bold ml-40">
-         <span  v-bind:style ="{animationDelay: (0.5+0/10)+'s'}">S</span>
-         <span v-bind:style ="{animationDelay: (0.5+1/10)+'s'}">C</span>
-         <span v-bind:style ="{animationDelay: (0.5+2/10)+'s'}">R</span>
-         <span v-bind:style ="{animationDelay: (0.5+3/10)+'s'}">O</span>
-         <span v-bind:style ="{animationDelay: (0.5+4/10)+'s'}">L</span>
-         <span v-bind:style ="{animationDelay: (0.5+5/10)+'s'}">L</span>
-      </p></div>
-      <hr id="firstHR" class="border-2 w-[100%] absolute top-[100%] left-0">
-      <div id="contact" class="w-[100vw] grid grid-cols-2 text-3xl  p-40">
+   
+      
+      <div id="contact" class="w-[100vw] grid grid-cols-2 text-3xl mt-[32vh]  p-40">
       <div id="spaceHero" class="flex items-center" >
-<p class="min-w-[30vw] ml-[10vw] mb-[20vh]  text-[#fff] col-span-2">From single-page websites to cloud-based applications, 
-                                                    starting from scratch, or rebuilding the brand. I help anyone needing 
-                                                    assistance with web projects; whatever your imagination thinks,<b> I can build it</b>  </p>
+<p class="min-w-[30vw] ml-[10vw] mb-[20vh]  text-[#fff] col-span-2">From concept to deployment, 
+                                                    starting from scratch, or rebuilding the brand. We deliver tailored solutions that scale with your business,<br> If you can imagine it; <b> We can build it</b>  </p>
       </div>
       
-      <div id="wrap" class="absolute top-[222vh]  left-0 w-[100%] flex bg-[#fff] p-5">
-        <div id="scrollBar" class="w-[100%] flex bg-[#fff] p-[2vw]" >
-          <img class="w-[5vw] mr-[5vw] h-[100%] rounded-full" v-for="image in imgList" :src="image.src" :alt="image.alt" />
-          <img class="w-[5vw] mr-[5vw] h-[100%] rounded-full" v-for="image in imgList" :src="image.src" :alt="image.alt" />
-        </div>
-      </div>
-   </div>
-   
-   <hr class="w-[100%] p-0 col-span-2 border-black">
+  
+   </div >
     </div>
-    <div class="flex border-2 border-black border-solid w-[100%] h-[81vh] ">
+    <div id='workContainer' class="flex flex-col m-0 p-0">
+      <p class=" h-[15vh] m-0 bg-[#FFFFFF] text-[#000000]  mt-[]">  Browse Portfolio</p>
+    <div class="flex w-[100%] h-[77vh] ">
     
     <ul class="w-[45%] text-xl font-bold ">
-      <li @click="()=> {
-        
-      }" class="cursor-pointer mb-[10vh]"   >
+      <li @click="projectChange('xbn')" class="cursor-pointer mb-[10vh]"   >
        Xtreme Body Nutrition
       </li>
       <li @click="projectChange('growwr')" class="cursor-pointer mb-[10vh]">
@@ -189,12 +173,31 @@ const apiCall = async () => {
        BattleShip
       </li>
     </ul>
-    <div >
-      <img v-if="battleshipVisible" class="  w-[75vw]" id="battleship" src="./assets/battleship.png" alt="">
+    <div   >
+      <img v-if="battleshipVisible" class="  w-[75vw]  " id="battleship" src="./assets/battleship.png" alt="">
       <img v-if="growwrVisible" class=" w-[75vw]" id="growwr" src="./assets/growwr.png" alt="">
       <img v-if="xbnVisible" class="  w-[75vw]" id="xbn" src="./assets/XBN.png" alt="">
     </div>
    </div>
+   <div id="wrap" class="  mt-[0vh] left-0 w-[100%] flex bg-[#fff] ">
+        <div id="scrollBar" class="w-[100%] flex bg-[#fff] p-[2vw]" >
+          <img class="w-[5vw] mr-[5vw] h-[100%] rounded-full" v-for="image in imgList" :src="image.src" :alt="image.alt" />
+          <img class="w-[5vw] mr-[5vw] h-[100%] rounded-full" v-for="image in imgList" :src="image.src" :alt="image.alt" />
+        </div>
+      </div>
+      <div class="h-[100vh]" id='options'>
+        <p class="text-center">Pricing and Packages </p>
+        <div id="appOption" class="flex m-[100px] text-[#000000] bg-[#ffffff] w-[75vw] border-2 border-black border-solid">
+            <div class="flex flex-col ">
+              <h1>Overview</h1>
+              <p class="text-base">When working with customers, we aim for the smoothest service possible from development through deployment. We can assist with any questions on our packages and what next steps are needed for your application and software needs</p>
+            </div>
+            <img class="w-[25vw]" src="./assets/options.png" alt="">
+        </div>
+
+      </div>
+   </div>
+       
    <div id="contactForm" class="border-2 border-black border-solid">
     <form  action="" >
       <div class="ml-10">
@@ -224,7 +227,12 @@ const apiCall = async () => {
 </template>
 
 <style scoped lang="scss">
+ #app{
+  margin: 0;
+  padding: 0;
+ }
 *{
+ 
   font-size: 24px;
   font-family: 'inter', sans-serif;
 }
@@ -234,6 +242,13 @@ const apiCall = async () => {
   transition: all 0.5s ease-in-out;
 
 }
+}
+#workContainer{
+  background: linear-gradient(to bottom, #0b0c10, #1f2833, #45a29e);
+  color: white;
+  p{
+    
+  }
 }
 #contactForm{
   width: 100vw;
@@ -253,9 +268,7 @@ const apiCall = async () => {
 #base{
   margin:0px;
   padding:0px;
-  #firstHR{
-    box-shadow:0px 5px 5px yellow;
-  }
+ 
   span{
     bottom: -1em;
     opacity:0;

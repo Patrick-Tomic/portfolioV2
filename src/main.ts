@@ -9,7 +9,6 @@ import moon  from './assets/moon.jpg'
 const scene =  new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.1,1000);
 
-
 const renderer = new THREE.WebGLRenderer({
     antialias:true,
     alpha:true,
@@ -80,4 +79,6 @@ const canvas = document.querySelector('canvas') as HTMLCanvasElement;
 canvas.style.position = 'absolute';
 canvas.style.left = '30%'
 canvas.style.top = '100%';
+ 
+
  
