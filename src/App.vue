@@ -242,7 +242,7 @@ const apiCall = async () => {
  
   
   background-image: url(./assets/space.png);
-
+  
   height: 100vh;
 }
 
