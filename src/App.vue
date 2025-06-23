@@ -18,6 +18,7 @@ import jest from './assets/jest.png'
 import java from './assets/java.png'
 import javascript from './assets/javascript.png'
 import csharp from './assets/csharp.png'
+const priceOptions = ['singlePage','multiPage','fullStack','mobile']
 const imgList = [
   {src:node, alt:'node'},
   {src:vue, alt:'vue'},
@@ -149,8 +150,8 @@ const apiCall = async () => {
       
    
       
-      <div id="contact" class="w-[100vw] grid grid-cols-2 text-3xl mt-[32vh]  p-40">
-      <div id="spaceHero" class="flex items-center" >
+      <div id="contact" class="w-[98.5vw] grid grid-cols-2 text-3xl mt-[32vh]  p-40">
+      <div id="spaceHero" class="flex w-[100%] items-center" >
 <p class="min-w-[30vw] ml-[10vw] mb-[20vh]  text-[#fff] col-span-2">From concept to deployment, 
                                                     starting from scratch, or rebuilding the brand. We deliver tailored solutions that scale with your business,<br> If you can imagine it; <b> We can build it</b>  </p>
       </div>
@@ -187,12 +188,16 @@ const apiCall = async () => {
       </div>
       <div class="h-[100vh]" id='options'>
         <p class="text-center">Pricing and Packages </p>
-        <div id="appOption" class="flex m-[100px] text-[#000000] bg-[#ffffff] w-[75vw] border-2 border-black border-solid">
-            <div class="flex flex-col ">
+        <div id="appOption" class="flex m-[100px] ml-[10vw] text-[#000000] bg-[#ffffff] w-[75vw] h-[50vh] border-2 border-black border-solid">
+            <div class="flex flex-col p-[2vw] ">
               <h1>Overview</h1>
-              <p class="text-base">When working with customers, we aim for the smoothest service possible from development through deployment. We can assist with any questions on our packages and what next steps are needed for your application and software needs</p>
+              <p class="text-base">When working with customers, we aim for the <b>smoothest</b> service possible from development through deployment. 
+                We can assist with any questions on our packages and what next steps are needed for your application and software needs</p>
+                <div id="priceButtons">
+                  <button v-for="id in priceOptions" :id="id" class="bg-[#ffffff] text-[#ffffff] "> x </button>
+                </div>
             </div>
-            <img class="w-[25vw]" src="./assets/options.png" alt="">
+            <img class="w-[35vw] border-l-2 border-l-solid border-black" src="./assets/options.png" alt="">
         </div>
 
       </div>
@@ -231,6 +236,9 @@ const apiCall = async () => {
   margin: 0;
   padding: 0;
  }
+ #spaceHero{
+  overflow: hidden;
+ }
 *{
  
   font-size: 24px;
@@ -251,11 +259,11 @@ const apiCall = async () => {
   }
 }
 #contactForm{
-  width: 100vw;
+  width: auto;
 }
 #contact{
- 
   
+  overflow: hidden;
   background-image: url(./assets/space.png);
   
   height: 100vh;
@@ -292,6 +300,12 @@ img{
     animation-iteration-count: 1;
 }
   
+}
+#priceButtons{
+  button{
+    width: 25px;
+    border-radius: 100%;
+  }
 }
 @keyframes opacity {
   from{

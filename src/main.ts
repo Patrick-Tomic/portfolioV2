@@ -55,7 +55,7 @@ const sphere = new THREE.Mesh(new THREE.SphereGeometry(5,50,50),
 }))
 scene.add(earthGroup)
 earthGroup.add(sphere)
-camera.position.z = 25
+camera.position.z = 20
 
 
 function animate () {
@@ -79,6 +79,8 @@ const canvas = document.querySelector('canvas') as HTMLCanvasElement;
 canvas.style.position = 'absolute';
 canvas.style.left = '30%'
 canvas.style.top = '100%';
+canvas.style.width= '1300px'
+ 
  
 
  
