@@ -157,7 +157,7 @@ const apiCall = async () => {
          <span v-bind:style ="{animationDelay: (0.5+5/10)+'s'}">L</span>
       </p></div>
       <hr id="firstHR" class="border-2 w-[100%] absolute top-[100%] left-0">
-      <div id="contact" class="w-[100vw] grid grid-cols-2 text-3xl mt-[20vh] p-40">
+      <div id="contact" class="w-[100vw] grid grid-cols-2 text-3xl  p-40">
       <div id="spaceHero" class="flex items-center" >
 <p class="min-w-[30vw] ml-[10vw] mb-[20vh]  text-[#fff] col-span-2">From single-page websites to cloud-based applications, 
                                                     starting from scratch, or rebuilding the brand. I help anyone needing 

@@ -1,6 +1,7 @@
 //need a vertex and fragment shader in order for the main shader program to work.
 varying vec2 vertexUV;
 //typed language. 
+varying vec3 vertexNormal;
 void main() {
     vertexUV = uv;
     gl_Position = projectionMatrix * modelViewMatrix *vec4(position,1.0);

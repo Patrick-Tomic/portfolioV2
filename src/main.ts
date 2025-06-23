@@ -29,7 +29,7 @@ const sphere = new THREE.Mesh(new THREE.SphereGeometry(5,50,50),
 }))
 scene.add(sphere)
 
-camera.position.z = 20
+camera.position.z = 25
 
 
 function animate () {
@@ -47,4 +47,4 @@ document.querySelector('#spaceHero')?.appendChild(renderer.domElement)
 const canvas = document.querySelector('canvas') as HTMLCanvasElement;
 canvas.style.position = 'absolute';
 canvas.style.left = '30%'
-canvas.style.top = '130%';
+canvas.style.top = '100%';
