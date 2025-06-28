@@ -101,7 +101,4 @@ canvas.style.position = 'absolute';
 
 canvas.style.top = '100%';
 canvas.style.width= '1900px'
- 
- 
 
- 
