@@ -142,9 +142,39 @@ const apiCall = async () => {
       
         <div class="p-[10vw] text-white font-bold text-3xl">
         <p class="headerA mb-10 font-[1000] text-[#fff]"> Hi, my name is Patrick Emanuel Tomic. </p>
-        <p class="text-2xl font-[1000] text-[#fff] w-[30vw]">
+        <p class="headerB text-2xl font-[1000] text-[#fff] w-[30vw]">
         I'm an Independent Software Engineer Consultant from Tampa, Fl
         </p>
+        <div id="summaryButtons" class="absolute w-[10vw] flex justify-around left-[50%] top-[80%]">
+          <button onclick="{{ 
+               const base = document.querySelector('#base')
+                   const headerA = document.querySelector('.headerA')
+                   const headerB = document.querySelector('.headerB')
+                   base.style.backgroundColor = '#1193d9'
+                   headerA.innerHTML = 'Hi my name is Patrick Emanuel Tomic'
+                   headerA.style.color = 'white'
+                   headerB.style.color = 'white'
+                   headerB.innerHTML =' I am an Independent Software Engineer From Tampa, FL'
+            }}"  class="bg-[#ffffff] text-[#ffffff] "> x </button>
+          
+                  <button onclick="{{ 
+                   const base = document.querySelector('#base')
+                   const headerA = document.querySelector('.headerA')
+                   const headerB = document.querySelector('.headerB')
+                   headerA.style.color = 'black'
+                   headerA.style.width = '30vw'
+                   headerA.innerHTML = 'Graduated from The University of South Florida in 2024 with my Bachelors of Information Science'
+                   headerB.innerHTML = 'Furthering my education each day is a life long goal.<br> Intently pursuing a Masters in Computer Science'
+                   headerB.style.color = 'black'
+               base.style.backgroundColor = '#AFE1AF';
+               
+                    }}"  class="bg-[#ffffff] text-[#ffffff] "> x </button>
+                   
+                    <button   class="bg-[#ffffff] text-[#ffffff] "> x </button>
+                </div>
+        <div>
+
+        </div>
       </div>
         <img src="./assets/me.jpeg" alt="" class="w-[20vw] ml-[10vw] mt-[10vh] grid-rows-4 ">
       
@@ -274,6 +304,7 @@ const apiCall = async () => {
   padding:0px;
  }
 #base{
+transition: all ease-in-out 0.5s;
   margin:0px;
   padding:0px;
  
@@ -301,6 +332,10 @@ img{
 }
   
 }
+button{
+  
+    border-radius: 100%;
+  }
 #priceButtons{
   button{
     width: 25px;
