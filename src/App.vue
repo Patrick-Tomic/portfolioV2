@@ -141,26 +141,39 @@ const apiCall = async () => {
   // Start the animation
   
 
-const originalHeaderA = 'Hi, my name is Patrick Emanuel Tomic';
-const originalHeaderB ='I am an Independent Software Engineer From Tampa, FL';
+const headerA = ref('Hi, my name is Patrick Emanuel Tomic');
+const headerB =ref('I am an Independent Software Engineer From Tampa, FL');
+const displayedA = ref('')
+const displayedB = ref('')
+const showCursor = ref(false)
+const isTyping = ref(false)
+const typingSpeef = ref(30)
 
-let index = 0;
-const newTextArray: any = []
 
-const animateReplacement = (statement: any) => {
-  const headerA = document.getElementById('#headerA')
-  const newStatment = statement.split('');
-  if (index < newStatment.length) {
-     newTextArray[index] = newStatment[index];
-     headerA.innerHTML = newTextArray.join('');
-    index++;
-    setTimeout(animateReplacement, 100); // Adjust the speed of the animation here
-  } else {
-    index = 0; // Reset index for next animation
+
+const animateReplacement = (header,displayed) => {
+  //if(isTyping.value) return;
+  displayed.value = '';
+  isTyping.value = true
+  showCursor.value = true;
+  let index = 0;
+
+  const typeWriter = () => {
+    if( index < header.value.length) {
+      displayed.value += header.value.charAt(index);
+      index++;
+      setTimeout(typeWriter, typingSpeef.value);
+    }else {
+      isTyping.value = false;
+      showCursor.value = false;
+    }
   }
+  typeWriter();
+  
 }
- 
- 
+ setTimeout(animateReplacement(headerA,displayedA), 2000);
+
+ setTimeout(animateReplacement(headerB,displayedB), 5000);
 
  
 </script>
@@ -172,9 +185,9 @@ const animateReplacement = (statement: any) => {
     <div id="base" class=" m-0 font-bold bg-[#1193d9] text-white grid-cols-2 grid grid-rows-3   h-[198vh]   ">
       
         <div class="p-[10vw] text-white font-bold text-3xl">
-        <p id='headerA'class="headerA mb-10 font-[1000] text-[#fff]"> Hi, my name is Patrick Emanuel Tomic. </p>
+        <p id='headerA'class="headerA mb-10 font-[1000] text-[#fff]">{{displayedA}}</p>
         <p id="headerB" class="headerB text-2xl font-[1000] text-[#fff] w-[30vw]">
-        I'm an Independent Software Engineer Consultant from Tampa, Fl
+       {{ displayedB }}
         </p>
         <div id="summaryButtons" class="absolute w-[10vw] flex justify-around left-[50%] top-[80%]">
           <button onclick="{{ 
