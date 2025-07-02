@@ -18,7 +18,7 @@ import jest from './assets/jest.png'
 import java from './assets/java.png'
 import javascript from './assets/javascript.png'
 import csharp from './assets/csharp.png'
-import { animateReplacement } from './src/main.ts'
+ 
 const priceOptions = ['singlePage','multiPage','fullStack','mobile']
 const imgList = [
   {src:node, alt:'node'},
@@ -81,11 +81,11 @@ else if(ref == 'battleship'){
   battleshipVisible.value = true;
 }
 }
-const apiCall = async () => {
-  const email: any = document.querySelector('input[name="email"]')?.value;
-  const name:any = document.querySelector('input[name="name"]')?.value;
-  const subject:any = document.querySelector('input[name="subject"]')?.value;
-  const message:any = document.querySelector('textarea[name="text"]')?.value;
+/*const apiCall = async () => {
+ // const email: any = document.querySelector('input[name="email"]')?.value;
+  //const name:any = document.querySelector('input[name="name"]')?.value;
+ // const subject:any = document.querySelector('input[name="subject"]')?.value;
+ // //const message:any = document.querySelector('textarea[name="text"]')?.value;
   if (!email || !name || !subject || !message) {
     alert('Please fill in all fields');
     return;
@@ -134,25 +134,28 @@ const apiCall = async () => {
 }
 
 }
-
+*/
 
 
 
   // Start the animation
   
 
-const headerA = ref('Hi, my name is Patrick Emanuel Tomic');
-const headerB =ref('I am an Independent Software Engineer From Tampa, FL');
+const headerA = ref('Hi, my name is Patrick Emanuel ');
+const headerB = ref(' I am an Independent Software Engineer From Tampa, FL')
 const displayedA = ref('')
 const displayedB = ref('')
 const showCursor = ref(false)
 const isTyping = ref(false)
+ 
 const typingSpeef = ref(30)
-
-
-
-const animateReplacement = (header,displayed) => {
-  //if(isTyping.value) return;
+const isClicked = ref(false)
+ 
+ 
+const animateReplacement = (header: any,displayed: any ) => {
+  isClicked.value = true
+  if(isTyping.value) return;
+ 
   displayed.value = '';
   isTyping.value = true
   showCursor.value = true;
@@ -166,15 +169,23 @@ const animateReplacement = (header,displayed) => {
     }else {
       isTyping.value = false;
       showCursor.value = false;
+      isClicked.value = false
     }
   }
+  if(isTyping.value)
   typeWriter();
   
 }
- setTimeout(animateReplacement(headerA,displayedA), 2000);
+setTimeout( animateReplacement(headerA, displayedA ),2000)
+setTimeout(animateReplacement(headerB, displayedB ), 4000)
+ const buttonClick = () => {
+   
+ 
+headerA.value = 'Graduated from The University of South Florida in 2024 with my Bachelors of Information Science.'
+displayedA.value = ''
+animateReplacement(headerA,displayedA)
 
- setTimeout(animateReplacement(headerB,displayedB), 5000);
-
+ }
  
 </script>
  
@@ -188,32 +199,12 @@ const animateReplacement = (header,displayed) => {
         <p id='headerA'class="headerA mb-10 font-[1000] text-[#fff]">{{displayedA}}</p>
         <p id="headerB" class="headerB text-2xl font-[1000] text-[#fff] w-[30vw]">
        {{ displayedB }}
-        </p>
+        </p> 
         <div id="summaryButtons" class="absolute w-[10vw] flex justify-around left-[50%] top-[80%]">
-          <button onclick="{{ 
-               const base = document.querySelector('#base')
-                   const headerA = document.querySelector('.headerA')
-                   const headerB = document.querySelector('.headerB')
-                   base.style.backgroundColor = '#1193d9'
-                   headerA.innerHTML = 'Hi my name is Patrick Emanuel Tomic'
-                   headerA.style.color = 'white'
-                   headerB.style.color = 'white'
-                   headerB.innerHTML =' I am an Independent Software Engineer From Tampa, FL'
-            }}"  class="bg-[#ffffff] text-[#ffffff] "> x </button>
+          <button   class="bg-[#ffffff] text-[#ffffff] "> x </button>
           
-                  <button v-on:click="animateReplacement('Graduated from The University of South Florida in 2024 with my Bachelors of Information Science');" onclick="{{ 
-                   const base = document.querySelector('#base')
-                   const headerA = document.querySelector('.headerA')
-                   const headerB = document.querySelector('.headerB')
-                   headerA.style.color = 'black'
-                   headerA.style.width = '30vw'
-                   //headerA.innerHTML = 'Graduated from The University of South Florida in 2024 with my Bachelors of Information Science'
-                   //headerB.innerHTML = 'Furthering my education each day is a life long goal.<br> Intently pursuing a Masters in Computer Science'
-                   headerB.style.color = 'black'
-                   
-               base.style.backgroundColor = '#AFE1AF';
-               
-                    }}"  class="bg-[#ffffff] text-[#ffffff] "> x </button>
+                  <button @click="buttonClick" :disabled="isClicked"
+                   class="bg-[#ffffff] text-[#ffffff] "> x </button>
                    
                     <button   class="bg-[#ffffff] text-[#ffffff] "> x </button>
                 </div>
@@ -365,7 +356,7 @@ transition: all ease-in-out 0.5s;
     animation-timing-function: ease-in;
   }
   .headerA{
-    width: 20vw;
+    width: 30vw;
   }
 img{
 
