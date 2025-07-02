@@ -18,7 +18,7 @@ import jest from './assets/jest.png'
 import java from './assets/java.png'
 import javascript from './assets/javascript.png'
 import csharp from './assets/csharp.png'
-import gradMe from './assets/gradME.jpg'
+import gradMe from '/src/assets/gradME.png'
  
 const priceOptions = ['singlePage','multiPage','fullStack','mobile']
 const imgList = [
@@ -181,7 +181,7 @@ animateReplacement(headerA, displayedA )
 setTimeout(()=> {
   animateReplacement(headerB, displayedB )
    
-},1250)
+},1500)
  
  
 const buttonClickA = () => {
@@ -231,8 +231,8 @@ setTimeout(()=> {
                   headerA.style.color = 'black'
                   headerB.style.color = 'black'
                  const moji =  document.querySelector('.moji')
-                 console.log(moji)
-                 moji.src = './assets/me.jpeg'
+                 console.log(moji.src)
+                 moji.src = '/src/assets/gradME.png'
                   }}"
                    class="bg-[#ffffff] text-[#ffffff] "> x </button>
                    
@@ -242,7 +242,7 @@ setTimeout(()=> {
 
         </div>
       </div>
-        <img  src="./assets/me.jpeg" alt="" class="moji w-[20vw] ml-[10vw] mt-[10vh] grid-rows-4 ">
+        <img  src="/src/assets/me.jpeg" alt="" class="moji w-[20vw] ml-[10vw] mt-[10vh] grid-rows-4 ">
       
    
       
@@ -360,7 +360,7 @@ setTimeout(()=> {
 #contact{
   
   overflow: hidden;
-  background-image: url(./assets/space.png);
+ // background-image: url(./assets/space.png);
   
   height: 100vh;
 }
