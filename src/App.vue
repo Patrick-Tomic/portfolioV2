@@ -18,6 +18,7 @@ import jest from './assets/jest.png'
 import java from './assets/java.png'
 import javascript from './assets/javascript.png'
 import csharp from './assets/csharp.png'
+import gradMe from './assets/gradME.jpg'
  
 const priceOptions = ['singlePage','multiPage','fullStack','mobile']
 const imgList = [
@@ -152,7 +153,7 @@ const typingSpeef = ref(30)
 const isClicked = ref(false)
  
  
-const animateReplacement = (header: any,displayed: any ) => {
+const animateReplacement: any = (header: any,displayed: any ) => {
   isClicked.value = true
   if(isTyping.value) return;
  
@@ -176,15 +177,34 @@ const animateReplacement = (header: any,displayed: any ) => {
   typeWriter();
   
 }
-setTimeout( animateReplacement(headerA, displayedA ),2000)
-setTimeout(animateReplacement(headerB, displayedB ), 4000)
- const buttonClick = () => {
+animateReplacement(headerA, displayedA ) 
+setTimeout(()=> {
+  animateReplacement(headerB, displayedB )
    
+},1250)
  
+ 
+const buttonClickA = () => {
+  headerA.value = 'Hi my name is Patrick Emanuel'
+displayedA.value = ''
+animateReplacement(headerA,displayedA)
+displayedB.value = ''
+headerB.value = 'I am an independent Software Engineer From Tampa, FL'
+setTimeout(()=> {
+  animateReplacement(headerB, displayedB )
+},1500)
+}
+
+ const buttonClickB = () => {
 headerA.value = 'Graduated from The University of South Florida in 2024 with my Bachelors of Information Science.'
 displayedA.value = ''
 animateReplacement(headerA,displayedA)
-
+displayedB.value = ''
+headerB.value = 'Furthering my education each day is a life long goal. Intently pursuing a Masters in Computer Science'
+setTimeout(()=> {
+  animateReplacement(headerB, displayedB )
+   
+},3500)
  }
  
 </script>
@@ -201,9 +221,19 @@ animateReplacement(headerA,displayedA)
        {{ displayedB }}
         </p> 
         <div id="summaryButtons" class="absolute w-[10vw] flex justify-around left-[50%] top-[80%]">
-          <button   class="bg-[#ffffff] text-[#ffffff] "> x </button>
-          
-                  <button @click="buttonClick" :disabled="isClicked"
+          <button @click="buttonClickA" onclick="{{ 
+               base.style.backgroundColor = '#1193d9'
+                  headerA.style.color = 'white'
+                  headerB.style.color = 'white'
+            }}" :disabled="isClicked"   class="bg-[#ffffff] text-[#ffffff] "> x </button>
+                  <button @click="buttonClickB" :disabled="isClicked" onclick="{{
+                  base.style.backgroundColor = '#AFE1AF'
+                  headerA.style.color = 'black'
+                  headerB.style.color = 'black'
+                 const moji =  document.querySelector('.moji')
+                 console.log(moji)
+                 moji.src = './assets/me.jpeg'
+                  }}"
                    class="bg-[#ffffff] text-[#ffffff] "> x </button>
                    
                     <button   class="bg-[#ffffff] text-[#ffffff] "> x </button>
@@ -212,7 +242,7 @@ animateReplacement(headerA,displayedA)
 
         </div>
       </div>
-        <img src="./assets/me.jpeg" alt="" class="w-[20vw] ml-[10vw] mt-[10vh] grid-rows-4 ">
+        <img  src="./assets/me.jpeg" alt="" class="moji w-[20vw] ml-[10vw] mt-[10vh] grid-rows-4 ">
       
    
       
@@ -356,7 +386,7 @@ transition: all ease-in-out 0.5s;
     animation-timing-function: ease-in;
   }
   .headerA{
-    width: 30vw;
+    width: 25vw;
   }
 img{
 
