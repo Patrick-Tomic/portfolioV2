@@ -10,6 +10,7 @@ import sun from './assets/sun.jpg'
 import earth from './assets/earth.jpg'
 import moon  from './assets/moon.jpg'
 import mercury from './assets/mercury.jpg'
+import venus from './assets/venus.jpg'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import getPlanet from './components/getPlanet'
 const scene =  new THREE.Scene();
@@ -82,8 +83,8 @@ const earthGroup = new THREE.Group()
  }
 }))
 const angle = Math.random() * Math.PI * 2;
-earthGroup.position.x = Math.cos(angle) * 2 
-earthGroup.position.z = Math.sin(angle) * 15;
+earthGroup.position.x = Math.cos(angle) * 17 
+earthGroup.position.z = Math.sin(angle) * 17;
 sphere.scale.setScalar(0.225)
 earthGroup.add(sphere)
 earthGroup.add(moonGroup)
@@ -91,18 +92,23 @@ solarSystem.add(earthGroup)
 camera.position.z = 20
 
 //add mercury
-const mercur = getPlanet('./assets/mercury.jpg', 10.25 ,0.2 )
- mercur.position.z = Math.sin(angle) * 10;
+const mercur = getPlanet(mercury, .25 ,0.2 )
+ mercur.position.z = Math.sin(angle) * 7.5;
+mercur.position.x = Math.cos(angle) * 7.5;
 solarSystem.add(mercur)
-
+solarSystem.position.x = -15
+const venu = getPlanet(venus, 2.75, .75)
+solarSystem.add(venu)
+venu.position.x = Math.cos(angle) * 10;
+venu.position.z = Math.sin(angle) * 10;
 function animate () {
     requestAnimationFrame(animate)
     renderer.render(scene, camera)
  
  scene.rotation.x = Math.PI/6
-   earthGroup.rotation.x = 0.01
+   earthGroup.rotation.x = 1
     sphere.rotation.y += 0.001
-
+venu.rotation.x+= 0.01
 moonGroup.rotation.y +=0.006 
  
 }
