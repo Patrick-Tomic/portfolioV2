@@ -20,8 +20,8 @@ const renderer = new THREE.WebGLRenderer({
     antialias:true,
    
 })
-const controls = new OrbitControls( camera, renderer.domElement );
-controls.update()
+//const controls = new OrbitControls( camera, renderer.domElement );
+//controls.update()
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
@@ -62,6 +62,23 @@ uniforms:{
     }
 }
 }))
+//add stars
+const starGeo = new THREE.BufferGeometry()
+const starMaterial = new THREE.PointsMaterial({
+    color: 0xffffff
+})
+const starVertices = []
+for(let i = 0; i < 10000; i++){
+    const x =(Math.random() - 0.5) * 2000
+    const y = (Math.random() - 0.5) * 2000
+    const z = -Math.random()   * 2000
+    starVertices.push(x,y,z)
+}
+starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3))
+const stars = new THREE.Points(starGeo, starMaterial)
+scene.add(stars)
+
+
 const sunGeometry = new THREE.SphereGeometry(5,100,100)
 const sunMaterial = new THREE.MeshBasicMaterial({map:new THREE.TextureLoader().load(sun)})
 const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial)
@@ -82,35 +99,36 @@ const earthGroup = new THREE.Group()
     }
  }
 }))
-const angle = Math.random() * Math.PI * 2;
-earthGroup.position.x = Math.cos(angle) * 17 
+const angle =6;
+console.log(angle)
+earthGroup.position.x = Math.cos(angle) * 22 
 earthGroup.position.z = Math.sin(angle) * 17;
 sphere.scale.setScalar(0.225)
 earthGroup.add(sphere)
 earthGroup.add(moonGroup)
 solarSystem.add(earthGroup)
-camera.position.z = 20
+camera.position.z = 12
 
 //add mercury
 const mercur = getPlanet(mercury, .25 ,0.2 )
- mercur.position.z = Math.sin(angle) * 7.5;
+ mercur.position.z = Math.sin(1) * 7.5;
 mercur.position.x = Math.cos(angle) * 7.5;
 solarSystem.add(mercur)
 solarSystem.position.x = -15
 const venu = getPlanet(venus, 2.75, .75)
 solarSystem.add(venu)
 venu.position.x = Math.cos(angle) * 10;
-venu.position.z = Math.sin(angle) * 10;
+venu.position.z = Math.sin(5) * 10;
 function animate () {
     requestAnimationFrame(animate)
     renderer.render(scene, camera)
  
  scene.rotation.x = Math.PI/6
-   earthGroup.rotation.x = 1
+    sunSphere.rotation.x += 0.0005
     sphere.rotation.y += 0.001
-venu.rotation.x+= 0.01
-moonGroup.rotation.y +=0.006 
- 
+venu.rotation.x+= 0.005
+moonGroup.rotation.y +=0.003 
+ solarSystem.rotation.y += 0.0001
 }
 animate()
 
