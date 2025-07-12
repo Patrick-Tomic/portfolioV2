@@ -7,14 +7,16 @@ import sunFragment from './shaders/sunFragment.glsl'
 import vertexShader from './shaders/vertex.glsl'
 import fragmentShader from './shaders/fragment.glsl'
 import sun from './assets/sun.jpg'
+import jupiter from './assets/jupiter.jpg'
 import earth from './assets/earth.jpg'
 import moon  from './assets/moon.jpg'
 import mercury from './assets/mercury.jpg'
+import mars from './assets/mars.jpg'
 import venus from './assets/venus.jpg'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import getPlanet from './components/getPlanet'
 const scene =  new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.1,1000);
+const camera = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, .1,1000);
 
 const renderer = new THREE.WebGLRenderer({
     antialias:true,
@@ -35,7 +37,7 @@ renderer.setSize(window.innerWidth, window.innerHeight)
  
 const moonGroup = new THREE.Group();
  
-
+const marsMoon = new THREE.Group()
 
 
 const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(5,10,50),
@@ -107,7 +109,7 @@ sphere.scale.setScalar(0.225)
 earthGroup.add(sphere)
 earthGroup.add(moonGroup)
 solarSystem.add(earthGroup)
-camera.position.z = 12
+camera.position.z = 16
 
 //add mercury
 const mercur = getPlanet(mercury, .25 ,0.2 )
@@ -119,16 +121,30 @@ const venu = getPlanet(venus, 2.75, .75)
 solarSystem.add(venu)
 venu.position.x = Math.cos(angle) * 10;
 venu.position.z = Math.sin(5) * 10;
+
+//add Mars
+const mar = getPlanet(mars, .75, .5)
+mar.position.x = Math.cos(angle) *25.5
+mar.position.z = Math.sin(9)*7.5
+solarSystem.add(mar)
+
+//add Jupiter
+const jupiterGeo = getPlanet(jupiter, 3, 1.75)
+
+jupiterGeo.position.x = Math.cos(angle) *40.5
+jupiterGeo.position.z = Math.sin(5)*7.5
+solarSystem.add(jupiterGeo)
 function animate () {
     requestAnimationFrame(animate)
     renderer.render(scene, camera)
- 
+ jupiterGeo.rotation.x += 0.0005
  scene.rotation.x = Math.PI/6
     sunSphere.rotation.x += 0.0005
     sphere.rotation.y += 0.001
 venu.rotation.x+= 0.005
 moonGroup.rotation.y +=0.003 
  solarSystem.rotation.y += 0.0001
+ mar.rotation.x +=0.01
 }
 animate()
 
