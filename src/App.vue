@@ -1,8 +1,7 @@
 <script setup lang="ts">
-
+import { ref } from 'vue'
+import logo from './assets/logo.png'
 import node from './assets/node.png'
-import space from './assets/space.png'
-import { ref } from 'vue';
 import vue from './assets/vue.png'
 import express from './assets/express.png'
 import mongo from './assets/mongo.png'
@@ -18,449 +17,561 @@ import jest from './assets/jest.png'
 import java from './assets/java.png'
 import javascript from './assets/javascript.png'
 import csharp from './assets/csharp.png'
-import gradMe from '/src/assets/gradME.png'
- 
-const priceOptions = ['singlePage','multiPage','fullStack','mobile']
+
+const priceOptions = ['singlePage', 'multiPage', 'fullStack', 'mobile']
 const imgList = [
-  {src:node, alt:'node'},
-  {src:vue, alt:'vue'},
-  {src:express, alt:'express'},
-  {src:mongo, alt:'mongo'},
-  {src:postgres, alt:'postgres'},
-  {src: react, alt:'react'},
-  {src:next, alt:'next'},
-  {src:AS3, alt:'AS3'},
-  {src:sql, alt:'sql'},
-  {src:python, alt:'python'},
-  {src:css, alt:'css'},
-  {src:html, alt:'html'},
-  {src: jest, alt: 'jest'},
-  {src:java, alt:'java'},
-  {src: javascript, alt:'javascript'},
-  {src:csharp, alt:'c#'},
+  { src: node, alt: 'node' },
+  { src: vue, alt: 'vue' },
+  { src: express, alt: 'express' },
+  { src: mongo, alt: 'mongo' },
+  { src: postgres, alt: 'postgres' },
+  { src: react, alt: 'react' },
+  { src: next, alt: 'next' },
+  { src: AS3, alt: 'AS3' },
+  { src: sql, alt: 'sql' },
+  { src: python, alt: 'python' },
+  { src: css, alt: 'css' },
+  { src: html, alt: 'html' },
+  { src: jest, alt: 'jest' },
+  { src: java, alt: 'java' },
+  { src: javascript, alt: 'javascript' },
+  { src: csharp, alt: 'c#' },
 ]
+
 let count = ref(0)
-let viewPointWidth = (window.innerWidth /100) *10
-const wrap: any = document.getElementById('wrap');
-//for tool HR element animation
+let viewPointWidth = (window.innerWidth / 100) * 10
 const scrollInterval = setInterval(() => {
-  const scrollBar: any = document.getElementById('scrollBar');
- 
-   
-   if(count.value >= imgList.length+1){
-    scrollBar.style.transform = `translateX(0px)`;
-    scrollBar.style.transition = 'none';
+  const scrollBar: any = document.getElementById('scrollBar')
+  if (count.value >= imgList.length + 1) {
+    scrollBar.style.transform = `translateX(0px)`
+    scrollBar.style.transition = 'none'
     count.value = 0
-  }else{
-    scrollBar.style.transition = 'transform 0.5s ease-in-out';
-
-      scrollBar.style.transform = `translateX(-${viewPointWidth * count.value}px)`;
+  } else {
+    scrollBar.style.transition = 'transform 0.5s ease-in-out'
+    scrollBar.style.transform = `translateX(-${viewPointWidth * count.value}px)`
     count.value++
-    
-    }
-}, 750);
+  }
+}, 750)
 
-
-//state for project visibility
-const xbnVisible = ref(true); // Define 'type' as a reactive property
+const xbnVisible = ref(true)
 const growwrVisible = ref(false)
 const battleshipVisible = ref(false)
-// Function to change project visibility based on the selected project
-  const projectChange: any =   (ref: any) => {
- if(ref == 'xbn'){
-  xbnVisible.value = true;
-  growwrVisible.value = false;
-  battleshipVisible.value = false;
-}else if(ref == 'growwr'){
-  xbnVisible.value = false;
-  growwrVisible.value = true;
-  battleshipVisible.value = false;
-}
-else if(ref == 'battleship'){
-  xbnVisible.value =false;
-  growwrVisible.value = false;
-  battleshipVisible.value = true;
-}
-}
-/*const apiCall = async () => {
- // const email: any = document.querySelector('input[name="email"]')?.value;
-  //const name:any = document.querySelector('input[name="name"]')?.value;
- // const subject:any = document.querySelector('input[name="subject"]')?.value;
- // //const message:any = document.querySelector('textarea[name="text"]')?.value;
-  if (!email || !name || !subject || !message) {
-    alert('Please fill in all fields');
-    return;
-  }
-  if (!email.includes('@')) {
-    alert('Please enter a valid email address');
-    return;
-  }
-  if (message.length < 10) {
-    alert('Message must be at least 10 characters long');
-    return;
-  }
-  if (message.length > 500) {
-    alert('Message must be less than 500 characters');
-    return;
-  }
-  if (name.length < 2) {
-    alert('Name must be at least 2 characters long');
-    return;
-  }
-  if (name.length > 50) {
-    alert('Name must be less than 50 characters');
-    return;
-  }
-  if (subject.length < 2) {
-    alert('Subject must be at least 2 characters long');
-    return;
-  }
-  try{
-  const response = await fetch(`${process.env.backendLink}/api/email`, {
-    method:'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      email: email,
-      name: name ,
-      subject: subject,
-      message: message,
-    })
-  });
-  const data = await response.json();
-  console.log(data);
-}catch(err){
-  console.log(err);
+const projectChange = (name: string) => {
+  xbnVisible.value = name === 'xbn'
+  growwrVisible.value = name === 'growwr'
+  battleshipVisible.value = name === 'battleship'
 }
 
-}
-*/
-
-
-
-  // Start the animation
-  
-
-const headerA = ref('Hi, my name is Patrick Emanuel ');
-const headerB = ref(' I am an Independent Software Engineer From Tampa, FL')
+const headerA = ref('Hi, my name is Patrick Emanuel')
+const headerB = ref('Independent Software Engineer — Tampa, FL')
 const displayedA = ref('')
 const displayedB = ref('')
-const showCursor = ref(false)
 const isTyping = ref(false)
- 
-const typingSpeef = ref(30)
 const isClicked = ref(false)
- 
- 
-const animateReplacement: any = (header: any,displayed: any ) => {
-  isClicked.value = true
-  if(isTyping.value) return;
- 
-  displayed.value = '';
-  isTyping.value = true
-  showCursor.value = true;
-  let index = 0;
+const typingSpeed = ref(30)
 
+const animateReplacement = (header: any, displayed: any) => {
+  isClicked.value = true
+  if (isTyping.value) return
+  displayed.value = ''
+  isTyping.value = true
+  let index = 0
   const typeWriter = () => {
-    if( index < header.value.length) {
-      displayed.value += header.value.charAt(index);
-      index++;
-      setTimeout(typeWriter, typingSpeef.value);
-    }else {
-      isTyping.value = false;
-      showCursor.value = false;
+    if (index < header.value.length) {
+      displayed.value += header.value.charAt(index)
+      index++
+      setTimeout(typeWriter, typingSpeed.value)
+    } else {
+      isTyping.value = false
       isClicked.value = false
     }
   }
-  if(isTyping.value)
-  typeWriter();
-  
+  if (isTyping.value) typeWriter()
 }
-animateReplacement(headerA, displayedA ) 
-setTimeout(()=> {
-  animateReplacement(headerB, displayedB )
-   
-},1500)
- 
- 
+
+animateReplacement(headerA, displayedA)
+setTimeout(() => animateReplacement(headerB, displayedB), 1500)
+
 const buttonClickA = () => {
-  headerA.value = 'Hi my name is Patrick Emanuel'
-displayedA.value = ''
-animateReplacement(headerA,displayedA)
-displayedB.value = ''
-headerB.value = 'I am an independent Software Engineer From Tampa, FL'
-setTimeout(()=> {
-  animateReplacement(headerB, displayedB )
-},1500)
+  headerA.value = 'Hi, my name is Patrick Emanuel'
+  displayedA.value = ''
+  animateReplacement(headerA, displayedA)
+  displayedB.value = ''
+  headerB.value = 'Independent Software Engineer — Tampa, FL'
+  setTimeout(() => animateReplacement(headerB, displayedB), 1500)
 }
 
- const buttonClickB = () => {
-headerA.value = 'Graduated from The University of South Florida in 2024 with my Bachelors of Information Science.'
-displayedA.value = ''
-animateReplacement(headerA,displayedA)
-displayedB.value = ''
-headerB.value = 'Furthering my education each day is a life long goal. Intently pursuing a Masters in Computer Science'
-setTimeout(()=> {
-  animateReplacement(headerB, displayedB )
-   
-},3500)
- }
- 
+const buttonClickB = () => {
+  headerA.value = 'Graduated from the University of South Florida in 2024'
+  displayedA.value = ''
+  animateReplacement(headerA, displayedA)
+  displayedB.value = ''
+  headerB.value = 'B.S. in Information Science. Pursuing a Masters in Computer Science.'
+  setTimeout(() => animateReplacement(headerB, displayedB), 3000)
+}
 </script>
- 
- 
 
-<template class="bg-[#12CFCF] m-0 p-0" >
-  <main class=" flex flex-col">
-    <div id="base" class=" m-0 font-bold bg-[#1193d9] text-white grid-cols-2 grid grid-rows-3   h-[198vh]   ">
-      
-        <div class="p-[10vw] text-white font-bold text-3xl">
-        <p id='headerA'class="headerA mb-10 font-[1000] text-[#fff]">{{displayedA}}</p>
-        <p id="headerB" class="headerB text-2xl font-[1000] text-[#fff] w-[30vw]">
-       {{ displayedB }}
-        </p> 
-        <div id="summaryButtons" class="absolute w-[10vw] flex justify-around left-[50%] top-[80%]">
-          <button @click="buttonClickA" onclick="{{ 
-               base.style.backgroundColor = '#1193d9'
-                  headerA.style.color = 'white'
-                  headerB.style.color = 'white'
-            }}" :disabled="isClicked"   class="bg-[#ffffff] text-[#ffffff] "> x </button>
-                  <button @click="buttonClickB" :disabled="isClicked" onclick="{{
-                  base.style.backgroundColor = '#AFE1AF'
-                  headerA.style.color = 'black'
-                  headerB.style.color = 'black'
-                 const moji =  document.querySelector('.moji')
-                 console.log(moji.src)
-                 moji.src = '/src/assets/gradME.png'
-                  }}"
-                   class="bg-[#ffffff] text-[#ffffff] "> x </button>
-                   
-                    <button   class="bg-[#ffffff] text-[#ffffff] "> x </button>
-                </div>
-        <div>
+<template>
+  <main>
 
+    <!-- ─── NAVBAR ─── -->
+    <nav class="navbar">
+      <a href="#hero" class="nav-logo">
+        <img :src="logo" alt="logo" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#work">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- ─── HERO ─── -->
+    <section class="hero" id="hero">
+      <div id="spaceHero"></div>
+      <div class="hero-gradient"></div>
+      <div class="hero-content">
+        <span class="hero-eyebrow">Portfolio</span>
+        <h1 class="hero-h1">{{ displayedA }}<span class="cursor" :class="{ hidden: !isClicked }">|</span></h1>
+        <p class="hero-sub">{{ displayedB }}</p>
+        <div class="hero-dots">
+          <button @click="buttonClickA" :disabled="isClicked" class="dot" :class="{ active: !isClicked }" />
+          <button @click="buttonClickB" :disabled="isClicked" class="dot" />
+          <button class="dot" />
         </div>
       </div>
-        <img  src="/src/assets/me.jpeg" alt="" class="moji w-[20vw] ml-[10vw] mt-[10vh] grid-rows-4 ">
-      
-   
-      
-      <div id="contact" class="w-[98.5vw] grid grid-cols-2 text-3xl mt-[32vh]  p-40">
-      <div id="spaceHero" class="flex w-[100%] items-center" >
-<p class="min-w-[30vw] ml-[10vw] mb-[20vh]  text-[#fff] col-span-2">From concept to deployment, 
-                                                    starting from scratch, or rebuilding the brand. We deliver tailored solutions that scale with your business,<br> If you can imagine it; <b> We can build it</b>  </p>
-      </div>
-      
-  
-   </div >
-    </div>
-    <div id='workContainer' class="flex flex-col m-0 p-0">
-      <p class=" h-[15vh] m-0 bg-[#FFFFFF] text-[#000000]  mt-[]">  Browse Portfolio</p>
-    <div class="flex w-[100%] h-[77vh] ">
-    
-    <ul class="w-[45%] text-xl font-bold ">
-      <li @click="projectChange('xbn')" class="cursor-pointer mb-[10vh]"   >
-       Xtreme Body Nutrition
-      </li>
-      <li @click="projectChange('growwr')" class="cursor-pointer mb-[10vh]">
-       Growwr
-      </li>
-      <li @click="projectChange('battleship')" class="cursor-pointer mb-[10vh]"   >
-       BattleShip
-      </li>
-    </ul>
-    <div   >
-      <img v-if="battleshipVisible" class="  w-[75vw]  " id="battleship" src="./assets/battleship.png" alt="">
-      <img v-if="growwrVisible" class=" w-[75vw]" id="growwr" src="./assets/growwr.png" alt="">
-      <img v-if="xbnVisible" class="  w-[75vw]" id="xbn" src="./assets/XBN.png" alt="">
-    </div>
-   </div>
-   <div id="wrap" class="  mt-[0vh] left-0 w-[100%] flex bg-[#fff] ">
-        <div id="scrollBar" class="w-[100%] flex bg-[#fff] p-[2vw]" >
-          <img class="w-[5vw] mr-[5vw] h-[100%] rounded-full" v-for="image in imgList" :src="image.src" :alt="image.alt" />
-          <img class="w-[5vw] mr-[5vw] h-[100%] rounded-full" v-for="image in imgList" :src="image.src" :alt="image.alt" />
-        </div>
-      </div>
-      <div class="h-[100vh]" id='options'>
-        <p class="text-center">Pricing and Packages </p>
-        <div id="appOption" class="flex m-[100px] ml-[10vw] text-[#000000] bg-[#ffffff] w-[75vw] h-[50vh] border-2 border-black border-solid">
-            <div class="flex flex-col p-[2vw] ">
-              <h1>Overview</h1>
-              <p class="text-base">When working with customers, we aim for the <b>smoothest</b> service possible from development through deployment. 
-                We can assist with any questions on our packages and what next steps are needed for your application and software needs</p>
-                <div id="priceButtons">
-                  <button v-for="id in priceOptions" :id="id" class="bg-[#ffffff] text-[#ffffff] "> x </button>
-                </div>
-            </div>
-            <img class="w-[35vw] border-l-2 border-l-solid border-black" src="./assets/options.png" alt="">
-        </div>
+      <div class="hero-scroll-hint">scroll ↓</div>
+    </section>
 
+    <!-- ─── WORK ─── -->
+    <section class="work" id="work">
+      <div class="section-header">
+        <span class="eyebrow">Selected Work</span>
+        <h2>Browse Portfolio</h2>
       </div>
-   </div>
-       
-   <div id="contactForm" class="border-2 border-black border-solid">
-    <form  action="" >
-      <div class="ml-10">
-        <label for="name">Full Name</label>
-        <input class="border-2 border-[#000] border-solid" name="name" type="text">
+
+      <div class="work-body">
+        <ul class="project-nav">
+          <li @click="projectChange('xbn')" :class="{ active: xbnVisible }">Xtreme Body Nutrition</li>
+          <li @click="projectChange('growwr')" :class="{ active: growwrVisible }">Growwr</li>
+          <li @click="projectChange('battleship')" :class="{ active: battleshipVisible }">BattleShip</li>
+        </ul>
+        <div class="project-preview">
+          <img v-if="xbnVisible" src="./assets/XBN.png" alt="XBN project" />
+          <img v-if="growwrVisible" src="./assets/growwr.png" alt="Growwr project" />
+          <img v-if="battleshipVisible" src="./assets/battleship.png" alt="Battleship project" />
+        </div>
       </div>
-      <div>
-        <label for="email">Email</label>
-        <input name="email" class="border-2 border-[#000] border-solid" type="email">
+
+      <div id="wrap">
+        <div id="scrollBar">
+          <img v-for="image in imgList" :src="image.src" :alt="image.alt" class="skill-icon" />
+          <img v-for="image in imgList" :src="image.src" :alt="image.alt" class="skill-icon" />
+        </div>
       </div>
-      <div >
-        <label for="subject">Subject</label>
-        <input name="subject" class="border-2  border-[#000] border-solid" type="text">
+    </section>
+
+    <!-- ─── PRICING ─── -->
+    <section class="pricing" id="about">
+      <div class="section-header dark">
+        <span class="eyebrow teal">Services</span>
+        <h2>Pricing &amp; Packages</h2>
       </div>
-      <div >
-        <label for="text">Message</label>
-        <textarea name="text" class="border-2 border-[#000] border-solid" id="messageBox"></textarea>
+      <div class="pricing-card">
+        <div class="pricing-text">
+          <h3>Overview</h3>
+          <p>When working with customers, we aim for the <strong>smoothest</strong> service possible — from development through deployment. We assist with any questions on our packages and what next steps are needed for your application and software needs.</p>
+          <div class="pricing-dots">
+            <button v-for="id in priceOptions" :id="id" class="dot teal" />
+          </div>
+        </div>
+        <img src="./assets/options.png" alt="Pricing options" class="pricing-img" />
       </div>
-     <button @click="">
-      Enter
-     </button>
-    </form>
-   </div>
-  
-    
+    </section>
+
+    <!-- ─── CONTACT ─── -->
+    <section class="contact" id="contact">
+      <div class="section-header">
+        <span class="eyebrow">Get In Touch</span>
+        <h2>Contact</h2>
+      </div>
+      <form class="contact-form">
+        <div class="field">
+          <label for="name">Full Name</label>
+          <input id="name" name="name" type="text" placeholder="John Smith" />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="john@example.com" />
+        </div>
+        <div class="field">
+          <label for="subject">Subject</label>
+          <input id="subject" name="subject" type="text" placeholder="Project inquiry" />
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="text" placeholder="Tell me about your project…"></textarea>
+        </div>
+        <button type="submit" class="send-btn">Send Message</button>
+      </form>
+    </section>
+
   </main>
 </template>
 
 <style scoped lang="scss">
- #app{
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
- }
- #spaceHero{
-  overflow: hidden;
- }
-*{
- 
-  font-size: 24px;
-  font-family: 'inter', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
-#wrap{
-  overflow:hidden;
-  #scrollBar{
-  transition: all 0.5s ease-in-out;
 
+// ─── NAVBAR ──────────────────────────────────────────────
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4vw;
+  height: 64px;
+  background: rgba(8, 8, 12, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
-}
-#workContainer{
-  background: linear-gradient(to bottom, #0b0c10, #1f2833, #45a29e);
-  color: white;
-  p{
-    
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  img {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+    display: block;
   }
 }
-#contactForm{
-  width: auto;
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2.5rem;
+  li a {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+    &:hover { color: #64ffda; }
+  }
 }
-#contact{
-  
-  overflow: hidden;
- // background-image: url(./assets/space.png);
-  
+
+// ─── HERO ───────────────────────────────────────────────
+.hero {
+  position: relative;
+  width: 100vw;
   height: 100vh;
+  overflow: hidden;
+  background: #000;
 }
 
- html,body{
-  margin:0px;
-  padding:0px;
- }
-#base{
-transition: all ease-in-out 0.5s;
-  margin:0px;
-  padding:0px;
- 
-  span{
-    bottom: -1em;
-    opacity:0;
-    animation: move-text .75s forwards;
-    animation-delay:3s;
-  }
-  p{
-    animation: opacity 1s;
-    animation-iteration-count: 1;
-    animation-timing-function: ease-in;
-  }
-  .headerA{
-    width: 25vw;
-  }
-img{
-
-  border-radius:5%;
-  //bounce animation ***
-  animation: user .3s;
-    animation-direction: alternate;
-    animation-iteration-count: 1;
+#spaceHero {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
-  
-}
-button{
-  
-    border-radius: 100%;
-  }
-#priceButtons{
-  button{
-    width: 25px;
-    border-radius: 100%;
-  }
-}
-@keyframes opacity {
-  from{
-    opacity: 0;
-  }
-  to{
-    opacity: 1;
-  }
-  
-}
-@keyframes user{ ///source of bounce
-  
-    0%{ 
-     
-  transform: scale3d(0,0,0);
 
- 
-  }
- 
-    100%{
-     
-      transform: scale3d(1, 1, 1);
-  
-    
-    }  
-
-    
+.hero-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.78) 35%, rgba(0,0,0,0.2) 70%, transparent);
+  z-index: 1;
+  pointer-events: none;
 }
-@keyframes move-text {
-  0% {
-    bottom: -0.2em;
-    opacity: 1;
-   
-  }
-  
-  50% {
-    bottom: 0.2em;
-   
-  }
 
-  100% {
-    bottom: 0;
-    opacity: 1;
-   
+.hero-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 64px 8vw 0;
+  z-index: 2;
+}
+
+.hero-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #64ffda;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 1.25rem;
+}
+
+.hero-h1 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.15;
+  max-width: 55vw;
+  margin-bottom: 1.25rem;
+}
+
+.cursor {
+  display: inline-block;
+  animation: blink 0.9s step-end infinite;
+  &.hidden { opacity: 0; }
+}
+
+.hero-sub {
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  color: rgba(255,255,255,0.65);
+  max-width: 38vw;
+  line-height: 1.7;
+}
+
+.hero-dots {
+  display: flex;
+  gap: 10px;
+  margin-top: 2.5rem;
+}
+
+.hero-scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  z-index: 2;
+}
+
+// ─── WORK ────────────────────────────────────────────────
+.work {
+  background: linear-gradient(to bottom, #0b0c10, #1a2233);
+  color: #fff;
+  padding-bottom: 0;
+}
+
+.section-header {
+  padding: 5rem 8vw 3rem;
+  &.dark { background: #f8f8f8; }
+
+  h2 {
+    font-size: clamp(1.75rem, 3vw, 2.75rem);
+    font-weight: 800;
+    margin-top: 0.5rem;
   }
 }
-@media (min-width: 1024px) {
 
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+.eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #64ffda;
+  font-family: 'Courier New', monospace;
+  &.teal { color: #1193d9; }
+}
+
+.work-body {
+  display: flex;
+  gap: 4vw;
+  padding: 0 8vw 4rem;
+  min-height: 60vh;
+  align-items: flex-start;
+}
+
+.project-nav {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 180px;
+  padding-top: 0.5rem;
+
+  li {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.35);
+    cursor: pointer;
+    transition: color 0.2s;
+    &:hover { color: rgba(255,255,255,0.75); }
+    &.active { color: #64ffda; }
+  }
+}
+
+.project-preview {
+  flex: 1;
+  img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  }
+}
+
+#wrap {
+  overflow: hidden;
+  background: rgba(255,255,255,0.04);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 1.5rem 0;
+}
+
+#scrollBar {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.skill-icon {
+  width: 5vw;
+  height: auto;
+  object-fit: contain;
+  margin-right: 5vw;
+  opacity: 0.55;
+  transition: opacity 0.2s;
+  &:hover { opacity: 1; }
+}
+
+// ─── PRICING ─────────────────────────────────────────────
+.pricing {
+  background: #f8f8f8;
+  padding-bottom: 6rem;
+
+  .section-header h2 { color: #0b0c10; }
+}
+
+.pricing-card {
+  display: flex;
+  margin: 0 8vw;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+  overflow: hidden;
+  max-width: 80vw;
+}
+
+.pricing-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3rem;
+  flex: 1;
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0b0c10;
+    margin-bottom: 1rem;
   }
 
-   
+  p {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.75;
+    max-width: 380px;
+  }
+}
+
+.pricing-dots {
+  display: flex;
+  gap: 10px;
+  margin-top: 2rem;
+}
+
+.pricing-img {
+  width: 40%;
+  object-fit: cover;
+  border-left: 1px solid rgba(0,0,0,0.08);
+}
+
+// ─── CONTACT ─────────────────────────────────────────────
+.contact {
+  background: #0b0c10;
+  padding-bottom: 6rem;
+
+  .section-header h2 { color: #fff; }
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0 8vw;
+  max-width: 640px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+
+  input, textarea {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    color: #fff;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+    &::placeholder { color: rgba(255,255,255,0.25); }
+    &:focus { border-color: #64ffda; }
+  }
+
+  textarea {
+    height: 130px;
+    resize: none;
+  }
+}
+
+.send-btn {
+  align-self: flex-start;
+  background: #64ffda;
+  color: #0b0c10;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.85rem 2rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  &:hover { opacity: 0.85; }
+}
+
+// ─── SHARED DOTS ─────────────────────────────────────────
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.25);
+  cursor: pointer;
+  transition: background 0.2s;
+  &:hover { background: rgba(255,255,255,0.8); }
+  &.active { background: #fff; }
+  &.teal { background: rgba(17,147,217,0.3); &:hover { background: #1193d9; } }
+  &:disabled { opacity: 0.4; cursor: default; }
+}
+
+// ─── ANIMATIONS ──────────────────────────────────────────
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 </style>
