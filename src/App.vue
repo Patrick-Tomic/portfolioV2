@@ -38,28 +38,58 @@ const imgList = [
   { src: csharp, alt: 'c#' },
 ]
 
-let count = ref(0)
-let viewPointWidth = (window.innerWidth / 100) * 10
-const scrollInterval = setInterval(() => {
-  const scrollBar: any = document.getElementById('scrollBar')
-  if (count.value >= imgList.length + 1) {
-    scrollBar.style.transform = `translateX(0px)`
-    scrollBar.style.transition = 'none'
-    count.value = 0
-  } else {
-    scrollBar.style.transition = 'transform 0.5s ease-in-out'
-    scrollBar.style.transform = `translateX(-${viewPointWidth * count.value}px)`
-    count.value++
-  }
-}, 750)
 
-const xbnVisible = ref(true)
-const growwrVisible = ref(false)
-const battleshipVisible = ref(false)
-const projectChange = (name: string) => {
-  xbnVisible.value = name === 'xbn'
-  growwrVisible.value = name === 'growwr'
-  battleshipVisible.value = name === 'battleship'
+import xbnImg from './assets/XBN.png'
+import growwrImg from './assets/growwr.png'
+import battleshipImg from './assets/battleship.png'
+import squirtImg from './assets/squirt.png'
+import landmarkImg from './assets/landmark.png'
+import prestigiousImg from './assets/prestigious.png'
+
+interface Project { id: string; label: string; src: string; url: string }
+interface Category { id: string; label: string; projects: Project[] }
+
+const categories: Category[] = [
+  {
+    id: 'spa',
+    label: 'Single Page Apps',
+    projects: [
+      { id: 'squirt',   label: 'Squirt Soft Wash', src: squirtImg,   url: 'https://squirtsoftwash-lylp20y4z-patricks-projects-66bbeed8.vercel.app/' },
+      { id: 'landmark', label: 'Landmark',          src: landmarkImg, url: 'https://landmarkenterprises.net/' },
+    ],
+  },
+  {
+    id: 'multipage',
+    label: 'Multi-page Apps',
+    projects: [
+      { id: 'growwr',     label: 'Growwr',                    src: growwrImg,     url: 'https://growwr.co/' },
+      { id: 'prestigious', label: 'Prestigious Home Services', src: prestigiousImg, url: 'http://prestigoushomeservices.com/' },
+    ],
+  },
+  {
+    id: 'fullstack',
+    label: 'Full Stack Apps',
+    projects: [
+      { id: 'xbn', label: 'Xtreme Body Nutrition', src: xbnImg, url: 'https://xbn-front-end-pearl.vercel.app/' },
+    ],
+  },
+  {
+    id: 'mobile',
+    label: 'Mobile Apps',
+    projects: [],
+  },
+]
+
+const activeCategoryId = ref('spa')
+const activeProjectId = ref('squirt')
+
+const activeCategory = () => categories.find(c => c.id === activeCategoryId.value)!
+const activeProject = () => activeCategory().projects.find(p => p.id === activeProjectId.value) ?? null
+
+const selectCategory = (id: string) => {
+  activeCategoryId.value = id
+  const first = categories.find(c => c.id === id)?.projects[0]
+  activeProjectId.value = first?.id ?? ''
 }
 
 const headerA = ref('Hi, my name is Patrick Emanuel')
@@ -151,17 +181,65 @@ const buttonClickB = () => {
         <h2>Browse Portfolio</h2>
       </div>
 
+      <!-- Category tabs -->
+      <div class="category-tabs">
+        <button
+          v-for="cat in categories"
+          :key="cat.id"
+          class="cat-tab"
+          :class="{ active: activeCategoryId === cat.id }"
+          @click="selectCategory(cat.id)"
+        >
+          {{ cat.label }}
+        </button>
+      </div>
+
+      <!-- Project body -->
       <div class="work-body">
+        <!-- Left: project list -->
         <ul class="project-nav">
-          <li @click="projectChange('xbn')" :class="{ active: xbnVisible }">Xtreme Body Nutrition</li>
-          <li @click="projectChange('growwr')" :class="{ active: growwrVisible }">Growwr</li>
-          <li @click="projectChange('battleship')" :class="{ active: battleshipVisible }">BattleShip</li>
+          <template v-if="activeCategory().projects.length">
+            <li
+              v-for="proj in activeCategory().projects"
+              :key="proj.id"
+              :class="{ active: activeProjectId === proj.id }"
+              @click="activeProjectId = proj.id"
+            >
+              {{ proj.label }}
+            </li>
+          </template>
+          <li v-else class="empty-state">Coming soon</li>
         </ul>
+
+        <!-- Right: screenshot -->
         <div class="project-preview">
-          <img v-if="xbnVisible" src="./assets/XBN.png" alt="XBN project" />
-          <img v-if="growwrVisible" src="./assets/growwr.png" alt="Growwr project" />
-          <img v-if="battleshipVisible" src="./assets/battleship.png" alt="Battleship project" />
+          <template v-if="activeProject()">
+            <img :src="activeProject()!.src" :alt="activeProject()!.label" />
+            <a
+              v-if="activeProject()!.url"
+              :href="activeProject()!.url"
+              target="_blank"
+              rel="noopener"
+              class="project-link"
+            >
+              Visit Site →
+            </a>
+          </template>
+          <div v-else class="preview-empty">
+            <span>No projects yet</span>
+          </div>
         </div>
+      </div>
+
+      <!-- BattleShip feature card -->
+      <div class="battleship-feature">
+        <div class="battleship-text">
+          <span class="eyebrow">Interactive Project</span>
+          <h3>BattleShip</h3>
+          <p>A fully playable browser BattleShip game — place your ships, take on the computer, and sink the fleet before yours goes down.</p>
+          <a href="/battleship/" class="play-btn">Play Now →</a>
+        </div>
+        <img :src="battleshipImg" alt="BattleShip game preview" class="battleship-preview" />
       </div>
 
       <div id="wrap">
@@ -228,6 +306,15 @@ const buttonClickB = () => {
   font-family: 'Inter', sans-serif;
 }
 
+:global(html),
+:global(body),
+:global(#app) {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
 // ─── NAVBAR ──────────────────────────────────────────────
 .navbar {
   position: fixed;
@@ -276,7 +363,7 @@ const buttonClickB = () => {
 // ─── HERO ───────────────────────────────────────────────
 .hero {
   position: relative;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   overflow: hidden;
   background: #000;
@@ -363,8 +450,49 @@ const buttonClickB = () => {
   padding-bottom: 0;
 }
 
+.category-tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 8vw;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 3rem;
+}
+
+.cat-tab {
+  position: relative;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.4);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 1rem 1.75rem;
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #64ffda;
+    transform: scaleX(0);
+    transition: transform 0.2s;
+  }
+
+  &:hover { color: rgba(255,255,255,0.75); }
+
+  &.active {
+    color: #64ffda;
+    &::after { transform: scaleX(1); }
+  }
+}
+
 .section-header {
-  padding: 5rem 8vw 3rem;
+  padding: 3.5rem 8vw 2rem;
   &.dark { background: #f8f8f8; }
 
   h2 {
@@ -386,8 +514,7 @@ const buttonClickB = () => {
 .work-body {
   display: flex;
   gap: 4vw;
-  padding: 0 8vw 4rem;
-  min-height: 60vh;
+  padding: 0 8vw 3rem;
   align-items: flex-start;
 }
 
@@ -407,15 +534,112 @@ const buttonClickB = () => {
     transition: color 0.2s;
     &:hover { color: rgba(255,255,255,0.75); }
     &.active { color: #64ffda; }
+    &.empty-state {
+      color: rgba(255,255,255,0.2);
+      font-style: italic;
+      cursor: default;
+      &:hover { color: rgba(255,255,255,0.2); }
+    }
   }
 }
 
 .project-preview {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   img {
     width: 100%;
     border-radius: 10px;
     box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  }
+}
+
+.project-link {
+  align-self: flex-start;
+  display: inline-block;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(100,255,218,0.35);
+  background: rgba(100,255,218,0.06);
+  color: #64ffda;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background 0.2s, border-color 0.2s;
+  &:hover {
+    background: rgba(100,255,218,0.15);
+    border-color: rgba(100,255,218,0.7);
+  }
+}
+
+.battleship-feature {
+  display: flex;
+  align-items: center;
+  gap: 4vw;
+  margin: 3rem 8vw;
+  padding: 2.5rem 3rem;
+  border-radius: 14px;
+  background: rgba(100, 255, 218, 0.04);
+  border: 1px solid rgba(100, 255, 218, 0.15);
+
+  .battleship-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    h3 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    p {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+      max-width: 420px;
+    }
+  }
+
+  .battleship-preview {
+    width: 35%;
+    border-radius: 8px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+  }
+}
+
+.play-btn {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+  display: inline-block;
+  padding: 0.7rem 1.75rem;
+  border-radius: 8px;
+  background: #64ffda;
+  color: #0b0c10;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: opacity 0.2s;
+  &:hover { opacity: 0.85; }
+}
+
+.preview-empty {
+  width: 100%;
+  min-height: 300px;
+  border-radius: 10px;
+  border: 1px dashed rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  span {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 }
 
@@ -444,7 +668,7 @@ const buttonClickB = () => {
 // ─── PRICING ─────────────────────────────────────────────
 .pricing {
   background: #f8f8f8;
-  padding-bottom: 6rem;
+  padding-bottom: 3.5rem;
 
   .section-header h2 { color: #0b0c10; }
 }
@@ -496,7 +720,7 @@ const buttonClickB = () => {
 // ─── CONTACT ─────────────────────────────────────────────
 .contact {
   background: #0b0c10;
-  padding-bottom: 6rem;
+  padding-bottom: 3.5rem;
 
   .section-header h2 { color: #fff; }
 }
@@ -573,5 +797,77 @@ const buttonClickB = () => {
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+// ─── MOBILE ──────────────────────────────────────────────
+@media (max-width: 768px) {
+  // Navbar
+  .nav-links {
+    gap: 1.25rem;
+    li a { font-size: 0.72rem; letter-spacing: 0.04em; }
+  }
+  .navbar { padding: 0 5vw; }
+
+  // Hero
+  .hero-content { padding: 64px 6vw 0; }
+  .hero-h1 {
+    font-size: clamp(1.6rem, 7vw, 2.5rem);
+    max-width: 90vw;
+  }
+  .hero-sub { max-width: 90vw; font-size: 0.95rem; }
+
+  // Section headers
+  .section-header { padding: 2.5rem 6vw 1.5rem; }
+
+  // Category tabs — scroll horizontally instead of overflowing
+  .category-tabs {
+    padding: 0 6vw;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+  .cat-tab { padding: 0.85rem 1.1rem; font-size: 0.72rem; white-space: nowrap; }
+
+  // Work body — stack vertically
+  .work-body {
+    flex-direction: column;
+    padding: 0 6vw 2rem;
+    gap: 2rem;
+  }
+  .project-nav { min-width: unset; flex-direction: row; flex-wrap: wrap; gap: 0.75rem 1.5rem; }
+  .project-nav li { font-size: 0.9rem; }
+
+  // Battleship card — stack vertically
+  .battleship-feature {
+    flex-direction: column;
+    margin: 2rem 6vw;
+    padding: 1.75rem;
+    .battleship-preview { width: 100%; }
+  }
+
+  // Skills strip
+  .skill-icon { width: 10vw; margin-right: 6vw; }
+
+  // Pricing card — stack vertically
+  .pricing { padding-bottom: 2.5rem; }
+  .pricing-card {
+    flex-direction: column;
+    margin: 0 6vw;
+    max-width: 100%;
+  }
+  .pricing-text { padding: 2rem; }
+  .pricing-img {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    max-height: 220px;
+    object-position: top;
+  }
+
+  // Contact
+  .contact { padding-bottom: 2.5rem; }
+  .contact-form { padding: 0 6vw; max-width: 100%; }
 }
 </style>

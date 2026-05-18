@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BattleShip — Patrick Emanuel</title>
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;700;800&family=Teko:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── portfolio back nav ── */
+    #portfolio-nav {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 52px;
+      background: rgba(8, 8, 12, 0.8);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      gap: 1.5rem;
+      z-index: 9999;
+    }
+    #portfolio-nav a.back {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    #portfolio-nav a.back:hover { color: #64ffda; }
+    #portfolio-nav .divider { width: 1px; height: 18px; background: rgba(255,255,255,0.12); }
+    #portfolio-nav span.label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+    }
+  </style>
+
+  <script defer src="runtime.js"></script>
+  <script defer src="bundle.js"></script>
+
+  <!-- Injected after bundle so these win the cascade -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const s = document.createElement('style')
+      s.textContent = `
+        html, body {
+          background-color: #080d1a !important;
+          min-height: 100vh;
+          font-family: 'Inter', sans-serif;
+        }
+
+        /* ── header ── */
+        header {
+          background: linear-gradient(to bottom, #080d1a, #0c1428) !important;
+          border-bottom: 1px solid rgba(100,255,218,0.15) !important;
+          height: auto !important;
+          padding: 52px 0 0 !important;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          justify-content: center !important;
+          padding-bottom: 1.5rem !important;
+        }
+        header h1 {
+          font-family: 'Anton', sans-serif !important;
+          font-size: clamp(2.5rem, 6vw, 5rem) !important;
+          color: #fff !important;
+          letter-spacing: 0.12em !important;
+          text-shadow:
+            0 0 30px rgba(100,255,218,0.3),
+            0 0 60px rgba(100,255,218,0.1) !important;
+        }
+
+        /* ── instruction modal ── */
+        .instruction {
+          background: #0f1928 !important;
+          box-shadow: 0 0 0 100vmax rgba(0,0,0,0.75), 0 24px 80px rgba(0,0,0,0.8) !important;
+          border: 1px solid rgba(100,255,218,0.2) !important;
+          border-radius: 16px !important;
+          color: #c8d8e8 !important;
+          font-family: 'Inter', sans-serif !important;
+          font-size: 0.95rem !important;
+          width: 560px !important;
+          max-width: 90vw !important;
+          height: auto !important;
+          max-height: 80vh !important;
+          left: 50% !important;
+          top: 50% !important;
+          transform: translate(-50%, -50%) !important;
+          padding: 2.5rem !important;
+          overflow-y: auto !important;
+        }
+        .instruction p {
+          font-size: 1rem !important;
+          line-height: 1.7 !important;
+          color: rgba(200,216,232,0.85) !important;
+          margin-bottom: 1.5rem !important;
+        }
+        .instruction ol {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 1.25rem !important;
+          padding-left: 1.25rem !important;
+        }
+        .instruction ol li {
+          font-size: 0.9rem !important;
+          line-height: 1.65 !important;
+          color: rgba(200,216,232,0.75) !important;
+          margin-top: 0 !important;
+        }
+        .instruction ul {
+          margin-top: 0.75rem !important;
+          padding-left: 0 !important;
+          list-style: none !important;
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 0.5rem !important;
+        }
+        .instruction ul li {
+          display: flex !important;
+          align-items: center !important;
+          gap: 0.75rem !important;
+          margin-top: 0 !important;
+        }
+        .instruction .gold {
+          width: 18px !important; height: 18px !important;
+          background: #B69460 !important;
+          border: none !important; border-radius: 3px !important;
+          flex-shrink: 0 !important;
+        }
+        .instruction .maroon {
+          width: 18px !important; height: 18px !important;
+          background: #800020 !important;
+          border: none !important; border-radius: 3px !important;
+          flex-shrink: 0 !important;
+        }
+        .instruction .close {
+          display: block !important;
+          margin: 2rem auto 0 !important;
+          width: auto !important; height: auto !important;
+          padding: 0.65rem 2.5rem !important;
+          background: #64ffda !important;
+          color: #080d1a !important;
+          font-family: 'Inter', sans-serif !important;
+          font-size: 0.85rem !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.08em !important;
+          text-transform: uppercase !important;
+          border: none !important;
+          border-radius: 8px !important;
+          cursor: pointer !important;
+          transition: opacity 0.2s !important;
+        }
+        .instruction .close:hover { opacity: 0.8 !important; }
+
+        /* ── main ── */
+        main {
+          background: #080d1a !important;
+          opacity: 1 !important;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          padding: 2rem 2rem 3rem !important;
+          min-height: 80vh !important;
+          height: auto !important;
+        }
+
+        /* ── menu bar ── */
+        .menuBar {
+          position: static !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 1rem !important;
+          width: 100% !important;
+          margin-bottom: 2rem !important;
+        }
+        .menuBar button {
+          font-family: 'Inter', sans-serif !important;
+          font-size: 0.8rem !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.1em !important;
+          text-transform: uppercase !important;
+          cursor: pointer !important;
+          padding: 0.6rem 1.75rem !important;
+          width: auto !important; height: auto !important;
+          border: 1px solid rgba(100,255,218,0.3) !important;
+          border-radius: 8px !important;
+          background: rgba(100,255,218,0.06) !important;
+          color: #64ffda !important;
+          transition: background 0.2s, border-color 0.2s !important;
+        }
+        .menuBar button:hover {
+          background: rgba(100,255,218,0.15) !important;
+          border-color: rgba(100,255,218,0.6) !important;
+          color: #64ffda !important;
+        }
+        .menuBar .title {
+          font-family: 'Teko', sans-serif !important;
+          font-size: 1.75rem !important;
+          font-weight: 400 !important;
+          color: #64ffda !important;
+          letter-spacing: 0.1em !important;
+          text-transform: uppercase !important;
+        }
+
+        /* ── grid container ── */
+        .gridContainer {
+          display: flex !important;
+          justify-content: center !important;
+          gap: 4vw !important;
+          margin-top: 0 !important;
+          width: 100% !important;
+        }
+        .gridContainer > div {
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          gap: 0.75rem !important;
+        }
+        .gridContainer h2 {
+          font-family: 'Inter', sans-serif !important;
+          font-size: 0.72rem !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.2em !important;
+          text-transform: uppercase !important;
+          color: rgba(255,255,255,0.4) !important;
+          text-align: center !important;
+        }
+
+        /* ── cells ── */
+        .playerCell, .compCell {
+          width: 3vw !important;
+          height: 3vw !important;
+          min-width: 28px !important;
+          min-height: 28px !important;
+          border: 1px solid rgba(255,255,255,0.06) !important;
+          border-radius: 2px !important;
+          transition: filter 0.1s !important;
+        }
+        .compCell:hover {
+          background-color: rgba(100,255,218,0.25) !important;
+          cursor: crosshair !important;
+        }
+
+        /* ── player grid label ── */
+        .player, .computer {
+          border: 1px solid rgba(255,255,255,0.06) !important;
+          border-radius: 6px !important;
+          overflow: hidden !important;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+        }
+
+        /* ── reset ── */
+        #reset {
+          margin-top: 2rem !important;
+          font-family: 'Inter', sans-serif !important;
+          font-size: 0.8rem !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.1em !important;
+          text-transform: uppercase !important;
+          padding: 0.65rem 2.5rem !important;
+          width: auto !important; height: auto !important;
+          background: rgba(220,60,60,0.15) !important;
+          border: 1px solid rgba(220,60,60,0.4) !important;
+          border-radius: 8px !important;
+          color: #ff6b6b !important;
+          cursor: pointer !important;
+          transition: background 0.2s !important;
+        }
+        #reset:hover { background: rgba(220,60,60,0.28) !important; }
+
+        /* ── footer ── */
+        footer {
+          background: #080d1a !important;
+          border-top: 1px solid rgba(255,255,255,0.06) !important;
+          box-shadow: none !important;
+          height: auto !important;
+          padding: 1.5rem 2rem !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 1.25rem !important;
+        }
+        footer h3 {
+          font-family: 'Inter', sans-serif !important;
+          font-size: 0.8rem !important;
+          font-weight: 600 !important;
+          letter-spacing: 0.1em !important;
+          text-transform: uppercase !important;
+          color: rgba(255,255,255,0.3) !important;
+          width: auto !important;
+          margin: 0 !important;
+        }
+        footer svg path { fill: rgba(255,255,255,0.4) !important; }
+        footer a { display: flex; align-items: center; }
+        footer svg { transition: transform 0.3s, opacity 0.2s !important; }
+        footer a:hover svg { transform: scale(1.2) !important; opacity: 1 !important; }
+        footer a:hover svg path { fill: #64ffda !important; }
+      `
+      document.head.appendChild(s)
+    })
+  </script>
+</head>
+<body>
+
+  <nav id="portfolio-nav">
+    <a href="/" class="back">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Portfolio
+    </a>
+    <div class="divider"></div>
+    <span class="label">BattleShip</span>
+  </nav>
+
+  <header>
+    <h1>BattleShip</h1>
+  </header>
+
+  <div class="instruction">
+    <p>Destroy all boats on the Computer's side before all of yours go down.</p>
+    <ol>
+      <li>
+        Place your 5 ships on the player grid. Toggle the axis button to switch between horizontal and vertical placement.
+      </li>
+      <li>
+        Once placed, click <strong>Start</strong> and attack the computer's grid.<br>
+        <ul>
+          <li><button class="gold"></button> Miss</li>
+          <li><button class="maroon"></button> Hit</li>
+        </ul>
+      </li>
+    </ol>
+    <button class="close">Start Playing</button>
+  </div>
+
+  <main>
+    <div class="menuBar">
+      <button id="horizontal" class="axis">X-Axis</button>
+      <button class="startBtn">Start</button>
+    </div>
+    <div class="gridContainer">
+      <div>
+        <h2>Your Fleet</h2>
+        <div class="player"></div>
+      </div>
+      <div>
+        <h2>Enemy Waters</h2>
+        <div class="computer"></div>
+      </div>
+    </div>
+    <button id="reset">Reset Game</button>
+  </main>
+
+  <footer>
+    <h3>Made by Patrick E. Tomic</h3>
+    <a href="https://github.com/Patrick-Tomic" target="_blank" rel="noopener">
+      <svg width="22" height="22" viewBox="0 0 35 35" fill="none">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5145 0C7.82943 0 0 8.0208 0 17.9436C0 25.8755 5.01658 32.5896 11.9759 34.9659C12.846 35.1446 13.1647 34.5799 13.1647 34.1048C13.1647 33.6888 13.136 32.2629 13.136 30.7773C8.26393 31.847 7.24936 28.6383 7.24936 28.6383C6.46638 26.5587 5.30626 26.0242 5.30626 26.0242C3.71162 24.925 5.42241 24.925 5.42241 24.925C7.19128 25.0439 8.11946 26.7669 8.11946 26.7669C9.68506 29.4998 12.2079 28.7276 13.2228 28.2522C13.3676 27.0935 13.8319 26.2915 14.3248 25.8459C10.439 25.4299 6.35059 23.8852 6.35059 16.9928C6.35059 15.0321 7.04609 13.4279 8.14814 12.1803C7.97426 11.7348 7.36516 9.89256 8.32237 7.4269C8.32237 7.4269 9.80121 6.95148 13.1357 9.26876C14.5633 8.87599 16.0356 8.67618 17.5145 8.6745C18.9933 8.6745 20.5008 8.88267 21.8929 9.26876C25.2277 6.95148 26.7066 7.4269 26.7066 7.4269C27.6638 9.89256 27.0543 11.7348 26.8805 12.1803C28.0116 13.4279 28.6784 15.0321 28.6784 16.9928C28.6784 23.8852 24.59 25.4001 20.6751 25.8459C21.3132 26.4103 21.8639 27.4796 21.8639 29.1731C21.8639 31.5793 21.8352 33.5105 21.8352 34.1044C21.8352 34.5799 22.1543 35.1446 23.024 34.9663C29.9833 32.5892 34.9999 25.8755 34.9999 17.9436C35.0286 8.0208 27.1705 0 17.5145 0Z" fill="#010101"/>
+      </svg>
+    </a>
+  </footer>
+
+</body>
+</html>
