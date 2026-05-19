@@ -3,53 +3,171 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=yes" />
 
     <!-- ─── Primary SEO ─── -->
-    <title>Patrick Emanuel | Software Engineer — Tampa, FL</title>
-    <meta name="description" content="Independent software engineer based in Tampa, FL. Full-stack web development, custom applications, and scalable solutions — from concept to deployment." />
-    <meta name="keywords" content="software engineer, web developer, full stack, Tampa, Florida, React, Vue, Node.js, Patrick Emanuel, Atomic Consulting" />
-    <meta name="author" content="Patrick Emanuel" />
-    <meta name="robots" content="index, follow" />
+    <title>Atomic Consulting &amp; Solutions | Custom Web, Mobile &amp; AI App Development — Tampa, FL</title>
+    <meta name="description" content="Atomic Consulting and Solutions builds custom websites, mobile apps, and AI-powered automation for businesses nationwide. Single page apps from $250. AI agents from $350. Transparent pricing, no hidden fees. Tampa, FL." />
+    <meta name="keywords" content="custom web development, mobile app development, AI agents, AI automation, web design Tampa FL, full stack developer Tampa, single page app, React developer, Vue developer, Node.js, software engineer Tampa Florida, Atomic Consulting, Patrick Emanuel, chatbot development, voice agent, email automation" />
+    <meta name="author" content="Patrick Emanuel — Atomic Consulting and Solutions" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <link rel="canonical" href="https://atomicconsultingandsolutions.com" />
 
-    <!-- ─── Open Graph (Facebook, LinkedIn) ─── -->
+    <!-- ─── Local SEO ─── -->
+    <meta name="geo.region" content="US-FL" />
+    <meta name="geo.placename" content="Tampa, Florida" />
+    <meta name="geo.position" content="27.9506;-82.4572" />
+    <meta name="ICBM" content="27.9506, -82.4572" />
+
+    <!-- ─── Open Graph ─── -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://atomicconsultingandsolutions.com" />
-    <meta property="og:title" content="Patrick Emanuel | Software Engineer — Tampa, FL" />
-    <meta property="og:description" content="Independent software engineer based in Tampa, FL. Full-stack web development, custom applications, and scalable solutions — from concept to deployment." />
+    <meta property="og:title" content="Atomic Consulting &amp; Solutions | Custom Web, Mobile &amp; AI Development" />
+    <meta property="og:description" content="Custom websites, mobile apps, and AI agents built for your business. Single page apps from $250. AI voice &amp; email agents from $350. Transparent pricing. Tampa, FL." />
     <meta property="og:image" content="https://atomicconsultingandsolutions.com/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Atomic Consulting and Solutions — Custom Web and AI Development" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="Atomic Consulting and Solutions" />
 
     <!-- ─── Twitter Card ─── -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://atomicconsultingandsolutions.com" />
-    <meta name="twitter:title" content="Patrick Emanuel | Software Engineer — Tampa, FL" />
-    <meta name="twitter:description" content="Independent software engineer based in Tampa, FL. Full-stack web development and scalable solutions." />
+    <meta name="twitter:title" content="Atomic Consulting &amp; Solutions | Web, Mobile &amp; AI Development" />
+    <meta name="twitter:description" content="Custom websites, mobile apps, and AI agents. SPAs from $250. AI agents from $350. Transparent pricing, no hidden fees." />
     <meta name="twitter:image" content="https://atomicconsultingandsolutions.com/og-image.png" />
 
     <!-- ─── Favicon ─── -->
-    <link rel="icon" type="image/png" href="/logo.png" />
-    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <!-- ─── Theme ─── -->
     <meta name="theme-color" content="#0b0c10" />
 
-    <!-- ─── Structured Data (JSON-LD) ─── -->
+    <!-- ─── Preconnect ─── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- ─── Structured Data ─── -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
+
+        {
+          "@type": "LocalBusiness",
+          "@id": "https://atomicconsultingandsolutions.com/#business",
+          "name": "Atomic Consulting and Solutions",
+          "alternateName": "Atomic Consulting",
+          "url": "https://atomicconsultingandsolutions.com",
+          "logo": "https://atomicconsultingandsolutions.com/logo.png",
+          "image": "https://atomicconsultingandsolutions.com/og-image.png",
+          "description": "Full-service digital development agency specializing in custom web applications, mobile apps, and AI-powered automation. Transparent pricing, no hidden fees.",
+          "telephone": "+17273593054",
+          "email": "pat12tomic@gmail.com",
+          "priceRange": "$250 - $1500+",
+          "currenciesAccepted": "USD",
+          "openingHours": "Mo-Su 00:00-24:00",
+          "areaServed": [
+            { "@type": "City", "name": "Tampa", "sameAs": "https://www.wikidata.org/wiki/Q49255" },
+            { "@type": "State", "name": "Florida" },
+            { "@type": "Country", "name": "United States" }
+          ],
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Tampa",
+            "addressRegion": "FL",
+            "addressCountry": "US"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 27.9506,
+            "longitude": -82.4572
+          },
+          "founder": { "@id": "https://atomicconsultingandsolutions.com/#person" },
+          "employee": { "@id": "https://atomicconsultingandsolutions.com/#person" },
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Digital Development Services",
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Single Page Application Development",
+                  "description": "Fully custom single-page web application. Best for portfolios, landing pages, and product showcases."
+                },
+                "price": "250",
+                "priceCurrency": "USD",
+                "priceSpecification": { "@type": "UnitPriceSpecification", "price": "250", "priceCurrency": "USD" }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Multi-Page Website Development",
+                  "description": "Structured multi-page website with navigation. Ideal for service businesses and brands."
+                },
+                "price": "250",
+                "priceCurrency": "USD",
+                "description": "Base price $250 + $50 per additional page"
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Full Stack Web Application Development",
+                  "description": "Custom end-to-end web applications with frontend, backend, database, and API integration."
+                },
+                "priceSpecification": {
+                  "@type": "UnitPriceSpecification",
+                  "price": "30",
+                  "priceCurrency": "USD",
+                  "unitText": "HOUR"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Mobile App Development",
+                  "description": "Native or cross-platform iOS and Android mobile app development."
+                },
+                "priceSpecification": {
+                  "@type": "UnitPriceSpecification",
+                  "price": "30",
+                  "priceCurrency": "USD",
+                  "unitText": "HOUR"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "AI Voice, Email & Chat Agent Development",
+                  "description": "Custom AI agents that handle calls, emails, and chats automatically. Starter, Standard, and Premium tiers available."
+                },
+                "price": "350",
+                "priceCurrency": "USD",
+                "description": "Starter from $350 · Standard $750 · Premium $1,500+"
+              }
+            ]
+          }
+        },
+
         {
           "@type": "Person",
           "@id": "https://atomicconsultingandsolutions.com/#person",
           "name": "Patrick Emanuel",
-          "jobTitle": "Independent Software Engineer",
-          "description": "Full-stack software engineer from Tampa, FL specializing in web development, custom applications, and scalable cloud solutions.",
+          "jobTitle": "Full-Stack Software Engineer & Founder",
+          "description": "Independent software engineer and founder of Atomic Consulting and Solutions, based in Tampa, FL. Specializes in web development, mobile apps, and AI automation.",
           "url": "https://atomicconsultingandsolutions.com",
-          "email": "mailto:pat12tomic@gmail.com",
+          "email": "pat12tomic@gmail.com",
+          "telephone": "+17273593054",
+          "sameAs": ["https://github.com/Patrick-Tomic"],
           "address": {
             "@type": "PostalAddress",
             "addressLocality": "Tampa",
@@ -61,32 +179,85 @@
             "name": "University of South Florida",
             "sameAs": "https://www.usf.edu"
           },
-          "knowsAbout": ["JavaScript", "TypeScript", "Vue", "React", "Node.js", "Python", "Java", "PostgreSQL", "MongoDB"]
+          "knowsAbout": ["JavaScript","TypeScript","Vue.js","React","Node.js","Python","Java","PostgreSQL","MongoDB","Express.js","AI Agents","Mobile Development"]
         },
+
         {
           "@type": "WebSite",
           "@id": "https://atomicconsultingandsolutions.com/#website",
           "url": "https://atomicconsultingandsolutions.com",
           "name": "Atomic Consulting and Solutions",
-          "description": "Portfolio and services site for Patrick Emanuel, Independent Software Engineer.",
-          "publisher": { "@id": "https://atomicconsultingandsolutions.com/#person" }
-        },
-        {
-          "@type": "ProfessionalService",
-          "@id": "https://atomicconsultingandsolutions.com/#business",
-          "name": "Atomic Consulting and Solutions",
-          "url": "https://atomicconsultingandsolutions.com",
-          "description": "Custom software development, web applications, and consulting services.",
-          "founder": { "@id": "https://atomicconsultingandsolutions.com/#person" },
-          "areaServed": "US",
-          "serviceType": ["Web Development", "Full-Stack Engineering", "Software Consulting"],
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Tampa",
-            "addressRegion": "FL",
-            "addressCountry": "US"
+          "description": "Custom web, mobile, and AI development services for businesses nationwide.",
+          "publisher": { "@id": "https://atomicconsultingandsolutions.com/#business" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://atomicconsultingandsolutions.com/?s={search_term_string}",
+            "query-input": "required name=search_term_string"
           }
+        },
+
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How much does a single page website cost?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A custom single page application (SPA) is $250 flat. This includes a fully custom design, mobile responsiveness, and contact/CTA integration."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the difference between a single page app and a multi-page website?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A single page application (SPA) delivers all content on one scrollable page — ideal for portfolios and landing pages. A multi-page website (MPA) has multiple separate pages with navigation, starting at $250 base plus $50 per additional page. Best for service businesses and brands."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How much does mobile app development cost?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Mobile app development is billed at $30/hr with a $400 non-refundable deposit to begin. The total cost is estimated after a free scoping consultation, since every project is different in scope and complexity."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What are AI agents and how much do they cost?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "AI agents are custom-built automations that handle tasks like answering calls, responding to emails, and qualifying leads — without human intervention. Atomic Consulting offers three tiers: Starter ($350) for single-purpose agents, Standard ($750) for CRM-integrated agents, and Premium ($1,500+) for multi-channel, fully custom agents."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Do you offer a free consultation?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Every project starts with a free, no-obligation scoping consultation. This lets us understand your needs and give you an accurate quote before any commitment is made."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is there a deposit required to start a project?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Full stack and mobile projects require a $400 non-refundable deposit to begin. This deposit is applied toward your total project cost and secures your spot in the development schedule. SPA and MPA projects are fixed-price with no deposit required."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Do you serve clients outside of Tampa?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. While Atomic Consulting and Solutions is based in Tampa, FL, we serve clients locally and nationwide. All project work can be completed fully remotely."
+              }
+            }
+          ]
         }
+
       ]
     }
     </script>

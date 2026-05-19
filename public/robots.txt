@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+# Disallow build artifacts
+Disallow: /assets/
+
 Sitemap: https://atomicconsultingandsolutions.com/sitemap.xml

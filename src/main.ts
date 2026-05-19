@@ -5,8 +5,12 @@ import App from './App.vue'
 // Mount Vue immediately — Three.js init is deferred
 createApp(App).mount('#app')
 
-// Defer all Three.js work until after first paint so the page isn't blocked
-requestIdleCallback(() => initThree(), { timeout: 200 })
+// Defer Three.js until after first paint — fallback for iOS Safari (no requestIdleCallback)
+if ('requestIdleCallback' in window) {
+  requestIdleCallback(() => initThree(), { timeout: 200 })
+} else {
+  setTimeout(initThree, 100)
+}
 
 async function initThree() {
   const THREE = await import('three')
@@ -103,9 +107,8 @@ async function initThree() {
   window.addEventListener('resize', onResize)
 
   // Animate
-  let animId: number
   const animate = () => {
-    animId = requestAnimationFrame(animate)
+    requestAnimationFrame(animate)
     earthGroup.rotation.y += 0.002
     moonGroup.rotation.y  += 0.005
     renderer.render(scene, camera)

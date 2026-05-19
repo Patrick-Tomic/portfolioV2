@@ -20,7 +20,6 @@ import java from './assets/java.png'
 import javascript from './assets/javascript.png'
 import csharp from './assets/csharp.png'
 
-const priceOptions = ['singlePage', 'multiPage', 'fullStack', 'mobile']
 const imgList = [
   { src: node, alt: 'node' },
   { src: vue, alt: 'vue' },
@@ -1700,7 +1699,8 @@ const buttonClickB = () => {
 
   // Contact
   .contact { padding-bottom: 2.5rem; }
-  .contact-inner { flex-direction: column; gap: 2rem; padding: 0 6vw; }
-  .contact-form { max-width: 100%; }
+  .contact-inner { flex-direction: column; gap: 2rem; padding: 0 6vw; align-items: center; }
+  .contact-info { align-items: center; text-align: center; }
+  .contact-form { max-width: 100%; width: 100%; }
 }
 </style>
