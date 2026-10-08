@@ -1,0 +1,5 @@
+# Only chat.php is reachable over HTTP; config, prompt and vendor files stay private.
+Require all denied
+<Files "chat.php">
+  Require all granted
+</Files>
