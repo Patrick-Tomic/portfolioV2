@@ -1,7 +1,6 @@
+# Everything is open to search engines, including /assets/: the site is built with JavaScript,
+# so Google needs the scripts, styles and images there to see the page the way visitors do.
 User-agent: *
 Allow: /
 
-# Disallow build artifacts
-Disallow: /assets/
-
-Sitemap: https://atomicconsultingandsolutions.com/sitemap.xml
+Sitemap: https://atomicconsulting.org/sitemap.xml

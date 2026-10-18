@@ -134,6 +134,3 @@ dist
 .netlify
 
 node_modules
-# Chat backend
-public/api/vendor
-public/api/config.php

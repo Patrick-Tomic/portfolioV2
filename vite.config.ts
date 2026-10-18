@@ -6,10 +6,6 @@ import vitePluginString from 'vite-plugin-string'
 
 export default defineConfig({
   plugins: [vue(), tailwindcss(), vitePluginString()],
-  server: {
-    // Run the chat backend locally with: php -S localhost:8000 -t public
-    proxy: { '/api': 'http://localhost:8000' },
-  },
   build: {
     rollupOptions: {
       input: {

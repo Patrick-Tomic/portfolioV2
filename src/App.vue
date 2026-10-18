@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import emailjs from '@emailjs/browser'
+import { ref, watch, onMounted } from 'vue'
+import { sendContactMessage } from './lib/contact'
 import ChatWidget from './components/ChatWidget.vue'
 import logo from './assets/logo.png'
 import aboutPhoto from './assets/about-photo.jpg'
@@ -49,7 +49,14 @@ import battleshipImg from './assets/battleship.png'
 import landmarkImg from './assets/landmark.png'
 import prestigiousImg from './assets/prestigious.png'
 
-interface Project { id: string; label: string; src: string; url: string }
+interface Project {
+  id: string
+  label: string
+  src: string
+  url: string
+  description?: string
+  tags?: string[]
+}
 interface Category { id: string; label: string; projects: Project[] }
 
 const categories: Category[] = [
@@ -57,33 +64,63 @@ const categories: Category[] = [
     id: 'spa',
     label: 'Single Page Apps',
     projects: [
-      { id: 'landmark', label: 'Landmark', src: landmarkImg, url: 'https://landmarkenterprises.net/' },
+      {
+        id: 'landmark',
+        label: 'Landmark',
+        src: landmarkImg,
+        url: 'https://landmarkenterprises.net/',
+        description:
+          "A single page app built for a pressure washing company. It's built with React, fully mobile friendly, and connected to the company's Google Business page for local SEO. The site is designed to drive their marketing, giving every promotion a fast, polished place to land.",
+        tags: ['React', 'Single Page App', 'SEO', 'Mobile Friendly'],
+      },
     ],
   },
   {
     id: 'multipage',
     label: 'Multi-page Apps',
     projects: [
-      { id: 'growwr',     label: 'Growwr',                    src: growwrImg,     url: 'https://growwr.co/' },
-      { id: 'prestigious', label: 'Prestigious Home Services', src: prestigiousImg, url: 'http://prestigoushomeservices.com/' },
+      {
+        id: 'prestigious',
+        label: 'Prestigious Home Services',
+        src: prestigiousImg,
+        url: 'http://prestigoushomeservices.com/',
+        description:
+          "A multi-page website built with Vue, with an interactive owner experience: the owner can add new projects to the site through a built-in UI, with no code required. For visitors, custom AI solutions like a chatbot and an automatic email replier make sure questions get answered right away. It's a site the owner can keep growing on their own.",
+        tags: ['Vue', 'Multi-Page', 'Owner UI', 'AI Chatbot', 'Email Auto-Reply'],
+      },
     ],
   },
   {
     id: 'fullstack',
     label: 'Full Stack Apps',
     projects: [
-      { id: 'xbn', label: 'Xtreme Body Nutrition', src: xbnImg, url: 'https://xbn-front-end-pearl.vercel.app/' },
+      {
+        id: 'xbn',
+        label: 'Xtreme Body Nutrition',
+        src: xbnImg,
+        url: 'https://xbn-front-end-pearl.vercel.app/',
+        description:
+          'A full stack e-commerce application built on the MERN stack (MongoDB, Express, React and Node.js). Customers check out securely, with payment authorization handled by Stripe. The owner gets a completely separate admin interface with full CRUD controls to add and remove products, update pricing, run sales and more.',
+        tags: ['MERN', 'E-commerce', 'Stripe', 'Admin Dashboard'],
+      },
+      {
+        id: 'growwr',
+        label: 'Growwr',
+        src: growwrImg,
+        url: 'https://growwr.co/',
+        description:
+          'Growwr is a full stack job market platform built for a country in Africa, similar to LinkedIn. It brings job seekers and employers together in one place to connect and find opportunities. The platform is built with Ruby on Rails, React, Express and MongoDB.',
+        tags: ['Ruby on Rails', 'React', 'Express', 'MongoDB'],
+      },
     ],
-  },
-  {
-    id: 'mobile',
-    label: 'Mobile Apps',
-    projects: [],
   },
 ]
 
 onMounted(() => {
-  setTimeout(() => { isLoading.value = false }, 3000)
+  setTimeout(() => {
+    isLoading.value = false
+    showSlide(HERO_TITLE, HERO_INTRO)
+  }, 3000)
 
   // ── Smooth-scroll for all anchor links ──
   document.querySelectorAll('a[href^="#"]').forEach(link => {
@@ -100,14 +137,12 @@ onMounted(() => {
   // ── Navbar: solidify background + track active section ──
   const navbar = document.querySelector('.navbar') as HTMLElement
   const sections = Array.from(document.querySelectorAll('section[id]'))
-  const navLinks = Array.from(document.querySelectorAll('.nav-links a')) as HTMLAnchorElement[]
+  const navLinks = Array.from(document.querySelectorAll('.nav-links a, .side-links a')) as HTMLAnchorElement[]
 
   const sectionObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        navLinks.forEach(a => a.classList.remove('nav-active'))
-        const match = navLinks.find(a => a.getAttribute('href') === `#${entry.target.id}`)
-        match?.classList.add('nav-active')
+        navLinks.forEach(a => a.classList.toggle('nav-active', a.getAttribute('href') === `#${entry.target.id}`))
       }
     })
   }, { threshold: 0.35 })
@@ -148,15 +183,44 @@ const selectCategory = (id: string) => {
 
 const isLoading = ref(true)
 
-const headerA = ref('Hi, my name is Patrick Emanuel')
-const headerB = ref('Independent Software Engineer — Tampa, FL')
+// ── Mobile menu: on phones the logo opens a sidebar instead of the inline links ──
+const MOBILE_QUERY = '(max-width: 768px)'
+const menuOpen = ref(false)
+
+const onLogoClick = (e: MouseEvent) => {
+  if (!window.matchMedia(MOBILE_QUERY).matches) return // desktop: the logo just goes back to the top
+  e.preventDefault()
+  e.stopImmediatePropagation() // skip the smooth-scroll-to-top handler
+  menuOpen.value = !menuOpen.value
+}
+const closeMenu = () => {
+  menuOpen.value = false
+  document.body.style.overflow = '' // right away, so tapping a link can scroll the page in the same click
+}
+
+// Stop the page scrolling behind the open menu
+watch(menuOpen, open => { document.body.style.overflow = open ? 'hidden' : '' })
+
+onMounted(() => {
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu() })
+  // Rotating to landscape / resizing to desktop width closes it
+  window.matchMedia(MOBILE_QUERY).addEventListener('change', e => { if (!e.matches) closeMenu() })
+})
+
+// First hero slide. "\n" starts the smaller tagline line under the company name.
+const HERO_TITLE = 'Atomic Consulting & Solutions\nWeb, AI & Marketing Solutions Built for Real Businesses'
+const HERO_INTRO = "I'm Patrick Tomic, founder of Atomic Consulting & Solutions. I build custom digital products for businesses and entrepreneurs from concept through launch."
+
+const headerA = ref(HERO_TITLE)
+const headerB = ref(HERO_INTRO)
 const displayedA = ref('')
 const displayedB = ref('')
 const isTyping = ref(false)
 const isClicked = ref(false)
 const typingSpeed = ref(30)
 
-const animateReplacement = (header: any, displayed: any) => {
+// Types header into displayed one character at a time, then calls onDone
+const animateReplacement = (header: any, displayed: any, onDone?: () => void) => {
   isClicked.value = true
   if (isTyping.value) return
   displayed.value = ''
@@ -169,52 +233,42 @@ const animateReplacement = (header: any, displayed: any) => {
       setTimeout(typeWriter, typingSpeed.value)
     } else {
       isTyping.value = false
-      isClicked.value = false
+      if (onDone) onDone()
+      else isClicked.value = false
     }
   }
-  if (isTyping.value) typeWriter()
+  typeWriter()
 }
 
-animateReplacement(headerA, displayedA)
-setTimeout(() => animateReplacement(headerB, displayedB), 1500)
-
-const buttonClickA = () => {
-  headerA.value = 'Hi, my name is Patrick Emanuel'
+// Types the heading, then the paragraph once the heading has finished (however long that takes)
+const showSlide = (title: string, intro: string) => {
+  headerA.value = title
+  headerB.value = intro
   displayedA.value = ''
-  animateReplacement(headerA, displayedA)
   displayedB.value = ''
-  headerB.value = 'Independent Software Engineer — Tampa, FL'
-  setTimeout(() => animateReplacement(headerB, displayedB), 1500)
+  animateReplacement(headerA, displayedA, () => {
+    setTimeout(() => animateReplacement(headerB, displayedB), 300)
+  })
 }
 
-const buttonClickB = () => {
-  headerA.value = 'Graduated from the University of South Florida in 2024'
-  displayedA.value = ''
-  animateReplacement(headerA, displayedA)
-  displayedB.value = ''
-  headerB.value = 'B.S. in Information Science. Pursuing a Masters in Computer Science.'
-  setTimeout(() => animateReplacement(headerB, displayedB), 3000)
-}
+const buttonClickA = () => showSlide(HERO_TITLE, HERO_INTRO)
+
+const buttonClickB = () => showSlide(
+  'Graduated from the University of South Florida in 2024',
+  'B.S. in Information Science. Pursuing a Masters in Computer Science.',
+)
 
 // ── Contact form ──
 const form = ref({ name: '', email: '', subject: '', message: '' })
 const formStatus = ref<'idle' | 'sending' | 'success' | 'error'>('idle')
 
+const currentYear = new Date().getFullYear()
+
 const submitForm = async () => {
   if (formStatus.value === 'sending') return
   formStatus.value = 'sending'
   try {
-    await emailjs.send(
-      'service_dpnvezf',
-      'template_iyh9k4z',
-      {
-        name:       form.value.name,
-        from_email: form.value.email,
-        subject:    form.value.subject,
-        message:    form.value.message,
-      },
-      'XAK6Zs6QJdrC_Ywy0'
-    )
+    await sendContactMessage(form.value)
     formStatus.value = 'success'
     form.value = { name: '', email: '', subject: '', message: '' }
   } catch {
@@ -222,14 +276,10 @@ const submitForm = async () => {
   }
 }
 
-const buttonClickC = () => {
-  headerA.value = 'On a mission to use AI and technology to help real people solve real problems.'
-  displayedA.value = ''
-  animateReplacement(headerA, displayedA)
-  displayedB.value = ''
-  headerB.value = "That's what Atomic Consulting & Solutions is all about."
-  setTimeout(() => animateReplacement(headerB, displayedB), 3000)
-}
+const buttonClickC = () => showSlide(
+  'On a mission to make great technology affordable for every small business.',
+  "That's what Atomic Consulting & Solutions is all about.",
+)
 </script>
 
 <template>
@@ -246,17 +296,45 @@ const buttonClickC = () => {
 
     <!-- ─── NAVBAR ─── -->
     <nav class="navbar">
-      <a href="#hero" class="nav-logo">
-        <img :src="logo" alt="logo" />
+      <!-- On phones the logo opens the sidebar menu -->
+      <a
+        href="#hero"
+        class="nav-logo"
+        :class="{ open: menuOpen }"
+        aria-controls="side-menu"
+        :aria-expanded="menuOpen"
+        aria-label="Atomic Consulting & Solutions, menu"
+        @click="onLogoClick"
+      >
+        <img :src="logo" alt="" />
+        <span class="nav-logo-hint" aria-hidden="true"><span></span><span></span><span></span></span>
       </a>
       <ul class="nav-links">
         <li><a href="#hero">Home</a></li>
-        <li><a href="#about">About</a></li>
         <li><a href="#work">Projects</a></li>
+        <li><a href="#about">About</a></li>
         <li><a href="#pricing">Pricing</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
+
+    <!-- ─── MOBILE SIDEBAR ─── -->
+    <div class="side-backdrop" :class="{ open: menuOpen }" aria-hidden="true" @click="closeMenu"></div>
+    <aside id="side-menu" class="side-menu" :class="{ open: menuOpen }" :aria-hidden="!menuOpen" aria-label="Menu">
+      <div class="side-head">
+        <img :src="logo" alt="" />
+        <span>Atomic Consulting<br />&amp; Solutions</span>
+        <button class="side-close" aria-label="Close menu" @click="closeMenu">✕</button>
+      </div>
+      <ul class="side-links">
+        <li><a href="#hero" :tabindex="menuOpen ? 0 : -1" @click="closeMenu">Home</a></li>
+        <li><a href="#work" :tabindex="menuOpen ? 0 : -1" @click="closeMenu">Projects</a></li>
+        <li><a href="#about" :tabindex="menuOpen ? 0 : -1" @click="closeMenu">About</a></li>
+        <li><a href="#pricing" :tabindex="menuOpen ? 0 : -1" @click="closeMenu">Pricing</a></li>
+        <li><a href="#contact" :tabindex="menuOpen ? 0 : -1" @click="closeMenu">Contact</a></li>
+      </ul>
+      <a href="#contact" class="side-cta" :tabindex="menuOpen ? 0 : -1" @click="closeMenu">Free consultation →</a>
+    </aside>
 
     <!-- ─── HERO ─── -->
     <section class="hero" id="hero">
@@ -264,7 +342,7 @@ const buttonClickC = () => {
       <div class="hero-gradient"></div>
       <div class="hero-content">
         <span class="hero-eyebrow">Portfolio</span>
-        <h1 class="hero-h1">{{ displayedA }}<span class="cursor" :class="{ hidden: !isClicked }">|</span></h1>
+        <h1 class="hero-h1"><template v-for="(line, i) in displayedA.split('\n')" :key="i"><br v-if="i" /><span :class="{ 'hero-tagline': i > 0 }">{{ line }}</span></template><span class="cursor" :class="{ hidden: !isClicked }">|</span></h1>
         <p class="hero-sub">{{ displayedB }}</p>
         <div class="hero-dots">
           <button @click="buttonClickA" :disabled="isClicked" class="dot" :class="{ active: !isClicked }" />
@@ -274,69 +352,6 @@ const buttonClickC = () => {
         <a href="#contact" class="hero-cta">Get In Touch</a>
       </div>
       <div class="hero-scroll-hint">scroll ↓</div>
-    </section>
-
-    <!-- ─── ABOUT ─── -->
-    <section class="about-section" id="about">
-      <div class="about-inner reveal">
-        <div class="about-photo">
-          <img :src="aboutPhoto" alt="Patrick smiling in his graduation cap and gown" loading="lazy" width="800" height="938" />
-        </div>
-        <div class="about-text">
-          <span class="eyebrow" data-delay="0s">About</span>
-          <h2>Hi, I'm Patrick.</h2>
-          <p>I was planning to join the Marines when I discovered programming, and it quickly became my passion. That was eight years ago. Since then I've earned my B.S. in Information Science from the University of South Florida (2024), and I'm now working toward a Master's in Computer Science.</p>
-          <p>Along the way I found that helping small businesses is the work I find most fulfilling. So I started Atomic Consulting &amp; Solutions, where I lead myself and keep learning every step of the way. My background in AI and customer service means I build with the people using your product in mind.</p>
-          <p>I work with small businesses, startups and anyone with an idea, whether you're here in Tampa or anywhere in the country.</p>
-          <p class="about-personal">Outside of code, you'll find me playing piano and guitar or writing poetry.</p>
-          <div class="about-links">
-            <a href="https://www.linkedin.com/in/patrick-tomic-446502183/" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
-              LinkedIn
-            </a>
-            <a href="https://github.com/Patrick-Tomic" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22v3.29c0 .32.21.69.82.57A12 12 0 0 0 12 .3"/></svg>
-              GitHub
-            </a>
-          </div>
-        </div>
-      </div>
-      <ul class="about-values reveal">
-        <li>
-          <span class="value-title">Flat, upfront pricing</span>
-          <span class="value-text">Websites and AI agents have fixed prices, so you know the cost before we start. No hidden fees.</span>
-        </li>
-        <li>
-          <span class="value-title">Consistent communication</span>
-          <span class="value-text">You'll always know where your project stands, and you'll hear back within 24 hours.</span>
-        </li>
-        <li>
-          <span class="value-title">Straightforward</span>
-          <span class="value-text">Honest answers and realistic timelines. No jargon, no sales pitch.</span>
-        </li>
-      </ul>
-
-      <div class="about-process reveal">
-        <h3>How we'll work together</h3>
-        <ol>
-          <li>
-            <span class="step-title">Free scoping call</span>
-            <span class="step-text">We talk through your goals, budget and timeline. No obligation.</span>
-          </li>
-          <li>
-            <span class="step-title">Drafts &amp; revisions</span>
-            <span class="step-text">I send drafts consistently so you see progress as it happens, and you can request revisions along the way.</span>
-          </li>
-          <li>
-            <span class="step-title">Launch &amp; hosting</span>
-            <span class="step-text">I set up the hosting and launch your project, so you don't have to deal with the technical side.</span>
-          </li>
-          <li>
-            <span class="step-title">Updates after launch</span>
-            <span class="step-text">Need changes down the road? Updates are available for an additional fee.</span>
-          </li>
-        </ol>
-      </div>
     </section>
 
     <!-- ─── WORK ─── -->
@@ -381,16 +396,38 @@ const buttonClickC = () => {
           <Transition name="project-img" mode="out-in">
             <template v-if="activeProject()" :key="activeProjectId">
               <div class="project-preview-inner">
-                <img :src="activeProject()!.src" :alt="activeProject()!.label" />
+                <!-- Screenshot opens the live site -->
                 <a
                   v-if="activeProject()!.url"
                   :href="activeProject()!.url"
                   target="_blank"
                   rel="noopener"
-                  class="project-link"
+                  class="project-shot"
+                  :aria-label="`Visit ${activeProject()!.label} (opens in a new tab)`"
                 >
-                  Visit Site →
+                  <img :src="activeProject()!.src" :alt="`${activeProject()!.label} website`" />
+                  <span class="project-shot-hint" aria-hidden="true">Visit site ↗</span>
                 </a>
+                <div v-else class="project-shot">
+                  <img :src="activeProject()!.src" :alt="`${activeProject()!.label} website`" />
+                </div>
+
+                <div class="project-info">
+                  <h3>{{ activeProject()!.label }}</h3>
+                  <p v-if="activeProject()!.description">{{ activeProject()!.description }}</p>
+                  <ul v-if="activeProject()!.tags?.length" class="project-tags">
+                    <li v-for="tag in activeProject()!.tags" :key="tag">{{ tag }}</li>
+                  </ul>
+                  <a
+                    v-if="activeProject()!.url"
+                    :href="activeProject()!.url"
+                    target="_blank"
+                    rel="noopener"
+                    class="project-link"
+                  >
+                    Visit Site →
+                  </a>
+                </div>
               </div>
             </template>
             <div v-else key="empty" class="preview-empty">
@@ -400,15 +437,93 @@ const buttonClickC = () => {
         </div>
       </div>
 
-      <!-- BattleShip feature card -->
-      <div class="battleship-feature reveal">
-        <div class="battleship-text">
-          <span class="eyebrow">Interactive Project</span>
-          <h3>BattleShip</h3>
-          <p>A fully playable browser BattleShip game — place your ships, take on the computer, and sink the fleet before yours goes down.</p>
-          <a href="/battleship/" class="play-btn">Play Now →</a>
+    </section>
+
+    <!-- ─── ABOUT ─── -->
+    <section class="about-section" id="about">
+      <div class="about-inner reveal">
+        <div class="about-photo">
+          <img :src="aboutPhoto" alt="Patrick Tomic smiling in his graduation cap and gown" loading="lazy" width="800" height="938" />
         </div>
-        <img :src="battleshipImg" alt="BattleShip game preview" class="battleship-preview" />
+        <div class="about-text">
+          <span class="eyebrow" data-delay="0s">About</span>
+          <h2>Hi, I'm Patrick Tomic.</h2>
+          <p>I am the founder of Atomic Consulting &amp; Solutions, based in Tampa, Florida. I was preparing to join the Marines when I discovered programming, and it has been both my profession and my passion ever since. Outside of work, I play piano and guitar and write poetry.</p>
+          <div class="about-links">
+            <a href="https://www.linkedin.com/in/patrick-tomic-446502183/" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+              LinkedIn
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61595151606074" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.5h-2.8V24C19.62 23.1 24 18.1 24 12.07"/></svg>
+              Facebook
+            </a>
+            <a href="https://github.com/Patrick-Tomic" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22v3.29c0 .32.21.69.82.57A12 12 0 0 0 12 .3"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hover (or focus) a card to open it; touch screens show them open -->
+      <div class="about-grid reveal">
+        <article class="about-card" tabindex="0">
+          <div class="about-card-head">
+            <span class="about-num">01</span>
+            <h3>What I Do</h3>
+            <span class="about-card-icon" aria-hidden="true"></span>
+          </div>
+          <p class="about-card-teaser">Websites, web apps, AI agents and social media management.</p>
+          <div class="about-card-body">
+            <div>
+              <p>I design and build custom digital products for small businesses and entrepreneurs, guiding each project from initial concept through launch. My services include custom websites, full stack web applications and online stores, AI-powered chat, email and call agents, and ongoing management of social media pages and business listings. Every service is priced transparently, so clients know the cost before any work begins.</p>
+            </div>
+          </div>
+        </article>
+        <article class="about-card" tabindex="0">
+          <div class="about-card-head">
+            <span class="about-num">02</span>
+            <h3>Who I Serve</h3>
+            <span class="about-card-icon" aria-hidden="true"></span>
+          </div>
+          <p class="about-card-teaser">Small businesses, startups and entrepreneurs, in Tampa and nationwide.</p>
+          <div class="about-card-body">
+            <div>
+              <p>I work with small businesses, startups and entrepreneurs, both in Tampa and nationwide. My clients have ranged from local service providers, such as a pressure washing company and a home services company, to a nutrition e-commerce brand and a job-market startup in Africa. Each project is shaped around the client's industry, goals and budget.</p>
+            </div>
+          </div>
+        </article>
+        <article class="about-card" tabindex="0">
+          <div class="about-card-head">
+            <span class="about-num">03</span>
+            <h3>Experience &amp; Education</h3>
+            <span class="about-card-icon" aria-hidden="true"></span>
+          </div>
+          <p class="about-card-teaser">Eight years of programming and a degree from the University of South Florida.</p>
+          <div class="about-card-body">
+            <div>
+              <p>I have been programming for eight years and hold a Bachelor of Science in Information Science from the University of South Florida (2024). I am currently pursuing a Master's degree in Computer Science. Alongside my technical work, I bring a background in marketing and customer service, which means I approach every project with the end customer in mind, not only the code. I designed and built this website, including its chatbot, myself.</p>
+            </div>
+          </div>
+        </article>
+        <article class="about-card" tabindex="0">
+          <div class="about-card-head">
+            <span class="about-num">04</span>
+            <h3>Working Together</h3>
+            <span class="about-card-icon" aria-hidden="true"></span>
+          </div>
+          <p class="about-card-teaser">A clear process, from a free consultation through launch.</p>
+          <div class="about-card-body">
+            <div>
+              <p>Every engagement begins with a free, no-obligation scoping call to discuss your goals, budget and timeline. From there, I provide regular drafts and incorporate your revisions throughout development, then handle hosting setup and launch. Updates after launch are available whenever you need them for an additional fee. Throughout the process, you can expect flat pricing, consistent communication and straightforward answers.</p>
+                <div class="about-cta-row">
+                  <a href="#contact" class="about-cta">Schedule a free consultation →</a>
+                  <span>I respond within 24 hours.</span>
+                </div>
+            </div>
+          </div>
+        </article>
       </div>
 
       <div id="wrap">
@@ -417,10 +532,13 @@ const buttonClickC = () => {
             v-for="(tool, i) in tickerList"
             :key="i"
             class="skill"
+            :tabindex="i < imgList.length ? 0 : -1"
             :aria-hidden="i >= imgList.length ? 'true' : undefined"
           >
-            <span class="skill-tile"><img :src="tool.src" alt="" loading="lazy" /></span>
-            <span class="skill-name">{{ tool.name }}</span>
+            <span class="skill-tile">
+              <span class="skill-logo"><img :src="tool.src" alt="" loading="lazy" /></span>
+              <span class="skill-name">{{ tool.name }}</span>
+            </span>
           </li>
         </ul>
       </div>
@@ -434,13 +552,38 @@ const buttonClickC = () => {
         <p class="pricing-intro">Great technology shouldn't be reserved for enterprise budgets. Every service comes with transparent pricing, honest timelines, and no hidden fees — just clean, purposeful technology built to grow with you.</p>
       </div>
 
+      <!-- Marketing -->
+      <div class="mkt-section reveal">
+        <div class="ai-header">
+          <span class="eyebrow mkt">Marketing</span>
+          <h3>Social Media &amp; Listings Management</h3>
+          <p>Stay visible where your customers are looking. Complete maintenance of your social media pages and business listings, keeping them active, accurate and up to date.</p>
+        </div>
+        <div class="mkt-card">
+          <div class="mkt-price-col">
+            <div class="ai-tier-label">Complete maintenance</div>
+            <div class="ai-price"><span class="mkt-from">Starting at</span> $50<span>/week</span></div>
+            <p>Your exact weekly rate depends on how many platforms and how much work your business needs. It's always agreed with you up front, before anything starts.</p>
+            <a href="#contact" class="service-cta">Get Started</a>
+          </div>
+          <ul class="mkt-platforms">
+            <li>Facebook</li>
+            <li>Instagram</li>
+            <li>TikTok</li>
+            <li>Google Business Profile</li>
+            <li>Yelp</li>
+            <li>&amp; more</li>
+          </ul>
+        </div>
+      </div>
+
       <!-- Service cards -->
       <div class="service-grid reveal">
 
         <div class="service-card">
           <div class="service-badge spa">SPA</div>
           <h3>Single Page App</h3>
-          <div class="service-price">$250 <span>flat</span></div>
+          <div class="service-price">$150 <span>flat</span></div>
           <p>A fully custom single-page web application. Perfect for portfolios, landing pages, and product showcases.</p>
           <ul class="service-features">
             <li>Custom design & layout</li>
@@ -454,8 +597,8 @@ const buttonClickC = () => {
         <div class="service-card">
           <div class="service-badge mpa">MPA</div>
           <h3>Multi-Page Website</h3>
-          <div class="service-price">$250 <span>+ $50/page</span></div>
-          <p>A structured multi-page site with navigation. A 5-page site (Home, About, Services, Portfolio, Contact) = $450.</p>
+          <div class="service-price">$150 <span>+ $50/page</span></div>
+          <p>A structured multi-page site with navigation. A 5-page site (Home, About, Services, Portfolio, Contact) = $350.</p>
           <ul class="service-features">
             <li>Full navigation structure</li>
             <li>SEO-optimised pages</li>
@@ -480,20 +623,6 @@ const buttonClickC = () => {
           <a href="#contact" class="service-cta">Book a Call</a>
         </div>
 
-        <div class="service-card">
-          <div class="service-badge mobile">Mobile</div>
-          <h3>Mobile App</h3>
-          <div class="service-price">Quoted <span>after scoping</span></div>
-          <div class="service-rate">$30/hr · $400 deposit to start</div>
-          <p>Native or cross-platform iOS & Android apps. Same transparent billing as full stack — scope first, build with clarity.</p>
-          <ul class="service-features">
-            <li>iOS & Android support</li>
-            <li>Cross-platform development</li>
-            <li>Deposit applied to total</li>
-            <li>Free scoping call included</li>
-          </ul>
-          <a href="#contact" class="service-cta">Book a Call</a>
-        </div>
 
       </div>
 
@@ -502,13 +631,14 @@ const buttonClickC = () => {
         <div class="ai-header">
           <span class="eyebrow teal">AI Automation</span>
           <h3>AI Voice, Email &amp; Chat Agents</h3>
-          <p>Stop losing leads after hours. Our custom AI agents handle calls, emails, and chats automatically — one-time build, no subscriptions.</p>
+          <p>Stop losing leads after hours. Our custom AI agents handle calls, emails and chats automatically. Each agent is a one-time build, plus a $500/month maintenance plan.</p>
         </div>
         <div class="ai-tiers">
 
           <div class="ai-card starter">
             <div class="ai-tier-label">Starter</div>
             <div class="ai-price">$350</div>
+            <div class="ai-maint">+ $500/month maintenance</div>
             <p>Single-purpose agent with predefined flows. Best for getting started with automation fast.</p>
             <ul>
               <li>FAQ chatbot</li>
@@ -522,6 +652,7 @@ const buttonClickC = () => {
             <div class="ai-tier-badge">Most Popular</div>
             <div class="ai-tier-label">Standard</div>
             <div class="ai-price">$750</div>
+            <div class="ai-maint">+ $500/month maintenance</div>
             <p>Custom-branded agent with business-specific logic and third-party integrations.</p>
             <ul>
               <li>CRM / calendar integration</li>
@@ -534,6 +665,7 @@ const buttonClickC = () => {
           <div class="ai-card premium">
             <div class="ai-tier-label">Premium</div>
             <div class="ai-price">$1,500<span>+</span></div>
+            <div class="ai-maint">+ $500/month maintenance</div>
             <p>Multi-channel agents trained on your data with advanced workflows and live escalation.</p>
             <ul>
               <li>Voice + email combo</li>
@@ -548,6 +680,17 @@ const buttonClickC = () => {
 
       <div class="pricing-footer reveal">
         <p>Not sure which service fits your project? <a href="#contact">Book a free scoping consultation</a> — no obligation, no sales pitch.</p>
+      </div>
+
+      <!-- BattleShip feature card -->
+      <div class="battleship-feature reveal">
+        <div class="battleship-text">
+          <span class="eyebrow">Interactive Project</span>
+          <h3>BattleShip</h3>
+          <p>A fully playable browser BattleShip game — place your ships, take on the computer, and sink the fleet before yours goes down.</p>
+          <a href="/battleship/" class="play-btn">Play Now →</a>
+        </div>
+        <img :src="battleshipImg" alt="BattleShip game preview" class="battleship-preview" />
       </div>
     </section>
 
@@ -592,6 +735,61 @@ const buttonClickC = () => {
     </section>
 
   </main>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#hero" class="footer-logo">
+          <img :src="logo" alt="" width="44" height="44" />
+          <span>Atomic Consulting &amp; Solutions</span>
+        </a>
+        <p>Web, AI &amp; marketing solutions built for real businesses. Custom websites, web apps, AI agents and social media management, from concept through launch.</p>
+        <div class="footer-social">
+            <a href="https://www.facebook.com/profile.php?id=61595151606074" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.5h-2.8V24C19.62 23.1 24 18.1 24 12.07"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/patrick-tomic-446502183/" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+            </a>
+            <a href="https://github.com/Patrick-Tomic" target="_blank" rel="noopener" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22v3.29c0 .32.21.69.82.57A12 12 0 0 0 12 .3"/></svg>
+            </a>
+        </div>
+      </div>
+
+      <nav class="footer-col" aria-label="Footer">
+        <h4>Explore</h4>
+        <a href="#hero">Home</a>
+        <a href="#work">Projects</a>
+        <a href="#about">About</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#contact">Contact</a>
+        <a href="/battleship/">Play BattleShip</a>
+      </nav>
+
+      <div class="footer-col">
+        <h4>Services</h4>
+        <a href="#pricing">Websites</a>
+        <a href="#pricing">Full Stack Apps</a>
+        <a href="#pricing">AI Agents</a>
+        <a href="#pricing">Social Media &amp; Listings</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="mailto:pat12tomic@gmail.com">pat12tomic@gmail.com</a>
+        <a href="tel:+17273593054">(727) 359-3054</a>
+        <span>Tampa, FL · Serving clients nationwide</span>
+        <a href="#contact" class="footer-cta">Free consultation →</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© {{ currentYear }} Atomic Consulting &amp; Solutions. All rights reserved.</span>
+      <a href="#hero">Back to top ↑</a>
+    </div>
+  </footer>
 
   <ChatWidget />
 </template>
@@ -689,16 +887,90 @@ const buttonClickC = () => {
   }
 }
 
-// ─── PROJECT IMAGE TRANSITION ────────────────────────────
-.project-preview-inner {
+.project-info {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  img {
-    width: 100%;
-    border-radius: 10px;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  gap: 0.6rem;
+
+  h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
   }
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.6);
+  }
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: 0.25rem 0.65rem;
+    border-radius: 99px;
+    border: 1px solid rgba(100,255,218,0.3);
+    background: rgba(100,255,218,0.06);
+    color: #64ffda;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+}
+
+// ─── PROJECT IMAGE TRANSITION ────────────────────────────
+// Screenshot and description side by side
+.project-preview-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: center;
+
+  .project-link { margin-top: 0.4rem; }
+}
+
+.project-shot {
+  position: relative;
+  display: block;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+
+  img {
+    display: block;
+    width: 100%;
+    transition: transform 0.4s ease;
+  }
+}
+
+a.project-shot {
+  outline-offset: 4px;
+  &:hover img, &:focus-visible img { transform: scale(1.03); }
+  &:hover .project-shot-hint, &:focus-visible .project-shot-hint { opacity: 1; transform: translateY(0); }
+}
+
+.project-shot-hint {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  background: rgba(11, 12, 16, 0.85);
+  color: #64ffda;
+  font-size: 0.8rem;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.25s, transform 0.25s;
 }
 .project-img-enter-active { transition: opacity 0.3s ease, transform 0.3s ease; }
 .project-img-leave-active { transition: opacity 0.2s ease, transform 0.2s ease; }
@@ -724,6 +996,7 @@ const buttonClickC = () => {
 }
 
 .nav-logo {
+  position: relative;
   display: flex;
   align-items: center;
   img {
@@ -774,6 +1047,144 @@ const buttonClickC = () => {
     &.nav-active::after { transform: scaleX(1); }
     &.nav-active { color: #64ffda; }
   }
+}
+
+// Little "menu" badge on the logo (phones only)
+.nav-logo-hint { display: none; }
+
+// ─── MOBILE SIDEBAR ─────────────────────────────────────
+.side-backdrop, .side-menu { display: none; }
+
+@media (max-width: 768px) {
+  .nav-logo {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    img { transition: transform 0.3s ease, filter 0.3s ease; }
+    &.open img { transform: rotate(-12deg) scale(0.92); filter: drop-shadow(0 0 10px rgba(100, 255, 218, 0.6)); }
+  }
+
+  .nav-logo-hint {
+    position: absolute;
+    right: -6px;
+    bottom: -2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 50%;
+    background: #64ffda;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    span { display: block; height: 1.5px; border-radius: 1px; background: #0b0c10; }
+  }
+
+  .side-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1150; // above the chat button
+    background: rgba(4, 6, 12, 0.6);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    &.open { opacity: 1; pointer-events: auto; }
+  }
+
+  .side-menu {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1200;
+    width: min(300px, 82vw);
+    padding: 1.25rem 1.5rem 2rem;
+    background: linear-gradient(to bottom, #0b0c10, #121a2a);
+    border-right: 1px solid rgba(100, 255, 218, 0.18);
+    box-shadow: 12px 0 40px rgba(0, 0, 0, 0.5);
+    transform: translateX(-105%);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    visibility: hidden;
+    &.open { transform: translateX(0); visibility: visible; }
+  }
+
+  .side-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    img { height: 44px; width: auto; }
+    span { color: #fff; font-weight: 800; font-size: 0.95rem; line-height: 1.25; }
+  }
+
+  .side-close {
+    margin-left: auto;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .side-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    li {
+      opacity: 0;
+      transform: translateX(-12px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    // Links slide in one after another
+    @for $i from 1 through 5 {
+      li:nth-child(#{$i}) { transition-delay: #{0.05 + $i * 0.04}s; }
+    }
+
+    a {
+      display: block;
+      padding: 0.85rem 0.75rem;
+      border-radius: 10px;
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      &:hover, &:active { background: rgba(100, 255, 218, 0.08); color: #64ffda; }
+      &.nav-active { color: #64ffda; background: rgba(100, 255, 218, 0.06); box-shadow: inset 3px 0 0 #64ffda; }
+    }
+  }
+
+  .side-menu.open .side-links li { opacity: 1; transform: translateX(0); }
+
+  .side-cta {
+    margin-top: auto;
+    display: block;
+    padding: 0.9rem 1rem;
+    border-radius: 10px;
+    background: #64ffda;
+    color: #0b0c10;
+    font-weight: 800;
+    text-align: center;
+    text-decoration: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .side-menu, .side-backdrop, .side-links li, .nav-logo img { transition: none !important; }
 }
 
 // ─── HERO ───────────────────────────────────────────────
@@ -842,6 +1253,14 @@ const buttonClickC = () => {
   margin-bottom: 1.25rem;
 }
 
+.hero-tagline {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-size: clamp(1.15rem, 2.2vw, 1.9rem);
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+}
+
 .cursor {
   display: inline-block;
   animation: blink 0.9s step-end infinite;
@@ -851,7 +1270,7 @@ const buttonClickC = () => {
 .hero-sub {
   font-size: clamp(1rem, 1.5vw, 1.25rem);
   color: rgba(255,255,255,0.65);
-  max-width: 38vw;
+  max-width: 46vw;
   line-height: 1.7;
 }
 
@@ -998,14 +1417,10 @@ const buttonClickC = () => {
 
 .project-preview {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  img {
-    width: 100%;
-    border-radius: 10px;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
-  }
 }
 
 .project-link {
@@ -1032,11 +1447,12 @@ const buttonClickC = () => {
   display: flex;
   align-items: center;
   gap: 4vw;
-  margin: 3rem 8vw;
+  margin: 2.5rem 8vw 0;
   padding: 2.5rem 3rem;
   border-radius: 14px;
-  background: rgba(100, 255, 218, 0.04);
-  border: 1px solid rgba(100, 255, 218, 0.15);
+  background: linear-gradient(135deg, #0b0c10, #1a2233);
+  border: 1px solid rgba(100, 255, 218, 0.2);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.18);
 
   .battleship-text {
     flex: 1;
@@ -1100,7 +1516,7 @@ const buttonClickC = () => {
   overflow: hidden;
   background: rgba(255,255,255,0.04);
   border-top: 1px solid rgba(255,255,255,0.08);
-  padding: 1.75rem 0 1.1rem;
+  padding: 0.75rem 0;
   // Fade icons in and out at the edges
   mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
 }
@@ -1125,27 +1541,34 @@ const buttonClickC = () => {
 
 .skill {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
-  width: 64px;
+  height: 84px; // room for the lift on hover
   margin-right: 3.5rem;
   flex-shrink: 0;
   cursor: default;
+  outline: none;
 }
 
+// The white tile widens on hover to reveal the tool's name beside its logo
 .skill-tile {
-  display: grid;
-  place-items: center;
-  width: 64px;
+  display: flex;
+  align-items: center;
   height: 64px;
-  padding: 10px;
+  padding: 0 10px;
   box-sizing: border-box;
   border-radius: 14px;
   background: #fff;
   opacity: 0.6;
   filter: grayscale(0.5);
   transition: opacity 0.25s, filter 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+
+.skill-logo {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
 
   img {
     max-width: 100%;
@@ -1155,33 +1578,45 @@ const buttonClickC = () => {
 }
 
 .skill-name {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: #64ffda;
+  max-width: 0;
+  overflow: hidden;
   white-space: nowrap;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0b0c10;
   opacity: 0;
-  transform: translateY(-4px);
-  transition: opacity 0.2s, transform 0.2s;
+  transition: max-width 0.35s ease, margin 0.35s ease, opacity 0.2s;
 }
 
-.skill:hover {
+.skill:hover,
+.skill:focus {
   .skill-tile {
     opacity: 1;
     filter: none;
-    transform: translateY(-4px) scale(1.06);
+    transform: translateY(-3px);
     box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 18px rgba(100, 255, 218, 0.35);
   }
   .skill-name {
+    max-width: 140px;
+    margin: 0 6px 0 10px;
     opacity: 1;
-    transform: translateY(0);
+    transition: max-width 0.35s ease, margin 0.35s ease, opacity 0.25s 0.1s;
   }
 }
 
-// Touch screens can't hover, so show the names all the time
+.skill:focus-visible .skill-tile {
+  outline: 2px solid #64ffda;
+  outline-offset: 3px;
+}
+
+// Pause while a tile is open from a tap or keyboard focus too
+#wrap:focus-within #scrollBar {
+  animation-play-state: paused;
+}
+
+// Touch screens: show logos in full color; tapping a tile opens it
 @media (hover: none) {
   .skill-tile { opacity: 0.85; filter: none; }
-  .skill-name { opacity: 0.75; transform: none; }
 }
 
 // No scrolling for visitors who turn off animations: show one static, wrapped row
@@ -1218,7 +1653,7 @@ const buttonClickC = () => {
 // Service cards grid
 .service-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
   padding: 2.5rem 8vw;
 }
@@ -1265,7 +1700,6 @@ const buttonClickC = () => {
   &.spa      { background: #e0f2fe; color: #0369a1; }
   &.mpa      { background: #f0fdf4; color: #166534; }
   &.fullstack{ background: #fef3c7; color: #92400e; }
-  &.mobile   { background: #fce7f3; color: #9d174d; }
 }
 
 .service-price {
@@ -1450,6 +1884,82 @@ const buttonClickC = () => {
   }
 }
 
+// Marketing block
+.mkt-section {
+  padding: 2.5rem 8vw 0;
+}
+
+.eyebrow.mkt { color: #7c3aed; }
+
+.mkt-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+  background: #fff;
+  border-radius: 14px;
+  padding: 2rem 2.25rem;
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  box-shadow: 0 4px 28px rgba(124, 58, 237, 0.12);
+
+  .mkt-price-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    p {
+      font-size: 0.85rem;
+      color: #6b7280;
+      line-height: 1.7;
+    }
+  }
+
+  .service-cta {
+    align-self: flex-start;
+    background: #7c3aed;
+  }
+
+  .mkt-from {
+    display: block;
+    margin-bottom: 0.15rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7c3aed;
+  }
+}
+
+.mkt-platforms {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+
+  li {
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    background: rgba(124, 58, 237, 0.06);
+    border: 1px solid rgba(124, 58, 237, 0.18);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #3b2675;
+    &::before {
+      content: '✓';
+      margin-right: 0.5rem;
+      color: #7c3aed;
+    }
+  }
+}
+
+.ai-maint {
+  margin-top: -0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1193d9;
+}
+
 .pricing-footer {
   text-align: center;
   padding: 2rem 8vw 0;
@@ -1611,7 +2121,9 @@ const buttonClickC = () => {
 .about-section {
   background: #0b0c10;
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  padding-bottom: 5rem;
+
+  // Tech stack ticker closes out the section
+  #wrap { margin-top: 4rem; }
 }
 
 .about-inner {
@@ -1660,9 +2172,6 @@ const buttonClickC = () => {
   }
 }
 
-.about-personal {
-  font-style: italic;
-}
 
 .about-links {
   display: flex;
@@ -1687,96 +2196,316 @@ const buttonClickC = () => {
   }
 }
 
-.about-process {
-  padding: 3.5rem 8vw 0;
 
-  h3 {
-    margin: 0 0 1.5rem;
-    font-size: clamp(1.25rem, 2vw, 1.6rem);
-    font-weight: 800;
-    color: #fff;
-  }
 
-  ol {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.25rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    counter-reset: step;
-  }
 
-  li {
-    counter-increment: step;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-    padding-top: 1rem;
-    border-top: 2px solid rgba(100, 255, 218, 0.3);
 
-    &::before {
-      content: counter(step, decimal-leading-zero);
-      font-family: 'Courier New', monospace;
-      font-size: 0.8rem;
-      color: #64ffda;
-    }
-  }
 
-  .step-title {
-    font-weight: 700;
-    color: #fff;
-  }
+// 2×2 cards that open on hover
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: start; // only the open card grows, not its neighbour
+  padding: 0 8vw;
+}
 
-  .step-text {
-    font-size: 0.88rem;
-    color: rgba(255,255,255,0.55);
-    line-height: 1.65;
+.about-card {
+  position: relative;
+  padding: 1.75rem;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden;
+  outline: none;
+  cursor: default;
+  transition: transform 0.35s ease, border-color 0.35s, background 0.35s, box-shadow 0.35s;
+
+  // Teal line that sweeps across the top when the card opens
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #64ffda, #1193d9);
+    transition: width 0.5s ease;
   }
 }
 
-.about-values {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-  margin: 0;
-  padding: 0 8vw;
-  list-style: none;
+.about-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 
-  li {
+  h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+  }
+}
+
+// "+" that turns into "×"
+.about-card-icon {
+  position: relative;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  margin-left: auto;
+  border-radius: 50%;
+  border: 1px solid rgba(100,255,218,0.4);
+  transition: transform 0.4s ease, background 0.3s, border-color 0.3s;
+
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 2px;
+    border-radius: 1px;
+    background: #64ffda;
+    transform: translate(-50%, -50%);
+  }
+  &::after { transform: translate(-50%, -50%) rotate(90deg); }
+}
+
+.about-card-teaser {
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.5);
+}
+
+// Collapsed to zero height, opens smoothly to the paragraph's natural height
+.about-card-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s ease;
+
+  > div {
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 1.5rem;
-    border-radius: 14px;
-    background: rgba(100, 255, 218, 0.04);
-    border: 1px solid rgba(100, 255, 218, 0.15);
+    gap: 1rem;
   }
 
-  .value-title {
-    font-size: 1rem;
+  p {
+    margin: 1rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.7);
+  }
+
+  p, .about-cta-row {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.35s ease;
+  }
+}
+
+.about-card:hover,
+.about-card:focus-within {
+  transform: translateY(-4px);
+  border-color: rgba(100,255,218,0.35);
+  background: rgba(100,255,218,0.04);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35), 0 0 24px rgba(100,255,218,0.08);
+
+  &::before { width: 100%; }
+  .about-num { color: #fff; }
+  .about-card-icon {
+    transform: rotate(135deg);
+    background: rgba(100,255,218,0.12);
+    border-color: #64ffda;
+  }
+  .about-card-body { grid-template-rows: 1fr; }
+  .about-card-body p,
+  .about-card-body .about-cta-row {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.12s;
+  }
+}
+
+.about-card:focus-visible { border-color: #64ffda; }
+
+// Touch screens can't hover: show every card open
+@media (hover: none) {
+  .about-card-icon { display: none; }
+  .about-card-body { grid-template-rows: 1fr; }
+  .about-card-body p,
+  .about-card-body .about-cta-row { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-card, .about-card::before, .about-card-icon, .about-card-body,
+  .about-card-body p, .about-card-body .about-cta-row { transition: none; }
+}
+
+.about-num {
+  transition: color 0.3s;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #64ffda;
+}
+
+
+
+
+
+.about-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+
+  span {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.45);
+  }
+}
+
+.about-cta {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  background: #64ffda;
+  color: #0b0c10;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.15s;
+  &:hover { opacity: 0.88; transform: translateY(-1px); }
+}
+
+// ─── FOOTER ──────────────────────────────────────────────
+.site-footer {
+  background: #080d1a;
+  border-top: 1px solid rgba(100,255,218,0.12);
+  color: rgba(255,255,255,0.6);
+  font-family: 'Inter', sans-serif;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1.3fr;
+  gap: 2.5rem;
+  padding: 4rem 8vw 3rem;
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  p {
+    margin: 0;
+    max-width: 340px;
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+}
+
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.05rem;
+  text-decoration: none;
+  img { width: 44px; height: 44px; object-fit: contain; }
+}
+
+.footer-social {
+  display: flex;
+  gap: 0.6rem;
+
+  a {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid rgba(100,255,218,0.25);
+    color: #64ffda;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    &:hover { background: rgba(100,255,218,0.12); border-color: #64ffda; transform: translateY(-2px); }
+  }
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+
+  h4 {
+    margin: 0 0 0.35rem;
+    font-size: 0.72rem;
     font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
     color: #64ffda;
   }
 
-  .value-text {
-    font-size: 0.88rem;
+  a, span {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  a:hover { color: #fff; }
+}
+
+.footer-col .footer-cta {
+  margin-top: 0.4rem;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  background: #64ffda;
+  color: #0b0c10;
+  font-weight: 700;
+  font-size: 0.85rem;
+  &:hover { color: #0b0c10; opacity: 0.88; }
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1.25rem 8vw;
+  padding-right: calc(8vw + 70px); // keep clear of the chat button
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.4);
+
+  a {
     color: rgba(255,255,255,0.55);
-    line-height: 1.65;
+    text-decoration: none;
+    &:hover { color: #64ffda; }
   }
 }
 
 // ─── MOBILE ──────────────────────────────────────────────
+@media (max-width: 1024px) {
+  .footer-grid { grid-template-columns: 1fr 1fr 1fr; }
+  .footer-brand { grid-column: 1 / -1; }
+  .project-preview-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+
+@media (hover: none) {
+  .project-shot-hint { opacity: 1; transform: none; }
+}
+
 @media (max-width: 1024px) and (min-width: 769px) {
-  .about-process ol { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 768px) {
-  // Navbar
-  .nav-links {
-    gap: 1.25rem;
-    li a { font-size: 0.72rem; letter-spacing: 0.04em; }
-  }
+  // Navbar: links move into the sidebar, opened from the logo
+  .nav-links { display: none; }
   .navbar { padding: 0 5vw; }
 
   // Hero
@@ -1793,11 +2522,11 @@ const buttonClickC = () => {
     padding: 3rem 6vw;
     gap: 2.5rem;
   }
-  .about-section { padding-bottom: 3rem; }
+  .about-section #wrap { margin-top: 2.5rem; }
   .about-photo { flex-basis: auto; img { max-width: 260px; } }
-  .about-process { padding: 2.5rem 6vw 0; ol { grid-template-columns: 1fr; } }
+  .about-grid { grid-template-columns: 1fr; padding: 0 6vw; gap: 1rem; }
+  .about-card { padding: 1.4rem; }
   .about-text p { max-width: 100%; }
-  .about-values { grid-template-columns: 1fr; padding: 0 6vw; gap: 1rem; }
 
   // Section headers
   .section-header { padding: 2.5rem 6vw 1.5rem; }
@@ -1831,8 +2560,10 @@ const buttonClickC = () => {
   }
 
   // Skills strip
-  .skill { width: 52px; margin-right: 2rem; }
-  .skill-tile { width: 52px; height: 52px; padding: 8px; border-radius: 12px; }
+  .skill { height: 70px; margin-right: 2rem; }
+  .skill-tile { height: 52px; padding: 0 8px; border-radius: 12px; }
+  .skill-logo { width: 36px; height: 36px; }
+  .skill-name { font-size: 0.85rem; }
 
   // Pricing — stack to 1 column
   .pricing { padding-bottom: 2.5rem; }
@@ -1846,11 +2577,18 @@ const buttonClickC = () => {
     gap: 1.5rem;
   }
   .ai-section { padding: 0 6vw 2rem; }
+  .mkt-section { padding: 1.5rem 6vw 0; }
+  .mkt-card { grid-template-columns: 1fr; padding: 1.75rem; gap: 1.5rem; }
 
   // Contact
   .contact { padding-bottom: 2.5rem; }
   .contact-hero { padding: 3rem 6vw 2rem; }
   .contact-form { width: calc(100% - 3rem); padding: 1.75rem; }
   .contact-row { grid-template-columns: 1fr; }
+
+  // Footer
+  .footer-grid { grid-template-columns: 1fr 1fr; padding: 3rem 6vw 2rem; gap: 2rem; }
+  .footer-brand { grid-column: 1 / -1; }
+  .footer-bottom { flex-direction: column; padding: 1.25rem 6vw 5.5rem; }
 }
 </style>

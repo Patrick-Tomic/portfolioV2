@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "tsx --test src/chatbot/*.test.ts email-agent/*.test.ts",
+    "build:email": "node scripts/build-email-agent.mjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -23,6 +25,7 @@
     "@vue/tsconfig": "^0.7.0",
     "sass-embedded": "^1.87.0",
     "sharp": "^0.34.5",
+    "tsx": "^4.23.15",
     "typescript": "~5.7.2",
     "vite": "^6.3.1",
     "vite-plugin-string": "^1.2.3",
